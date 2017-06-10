@@ -14,7 +14,7 @@ pipeline:
     pull: true
     environment:
       TAGS: netgo
-    secrets: [ codecov_token, line_to, line_channel_secret, line_channel_token ]
+    secrets: [ webhook_id, webhook_token ]
     commands:
       - make vet
       - make lint
