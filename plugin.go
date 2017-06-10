@@ -46,36 +46,36 @@ type (
 
 // Exec executes the plugin.
 func (p Plugin) Exec() error {
-	// attachment := slack.Attachment{
-	// 	Text:       message(p.Repo, p.Build),
-	// 	Fallback:   fallback(p.Repo, p.Build),
-	// 	Color:      color(p.Build),
-	// 	MarkdownIn: []string{"text", "fallback"},
-	// 	ImageURL:   p.Config.ImageURL,
-	// }
+	attachment := slack.Attachment{
+		Text:       message(p.Repo, p.Build),
+		Fallback:   fallback(p.Repo, p.Build),
+		Color:      color(p.Build),
+		MarkdownIn: []string{"text", "fallback"},
+		ImageURL:   p.Config.ImageURL,
+	}
 
-	// payload := slack.WebHookPostPayload{}
-	// payload.Username = p.Config.Username
-	// payload.Attachments = []*slack.Attachment{&attachment}
-	// payload.IconUrl = p.Config.IconURL
-	// payload.IconEmoji = p.Config.IconEmoji
+	payload := slack.WebHookPostPayload{}
+	payload.Username = p.Config.Username
+	payload.Attachments = []*slack.Attachment{&attachment}
+	payload.IconUrl = p.Config.IconURL
+	payload.IconEmoji = p.Config.IconEmoji
 
-	// if p.Config.Recipient != "" {
-	// 	payload.Channel = prepend("@", p.Config.Recipient)
-	// } else if p.Config.Channel != "" {
-	// 	payload.Channel = prepend("#", p.Config.Channel)
-	// }
+	if p.Config.Recipient != "" {
+		payload.Channel = prepend("@", p.Config.Recipient)
+	} else if p.Config.Channel != "" {
+		payload.Channel = prepend("#", p.Config.Channel)
+	}
 
-	// if p.Config.Template != "" {
-	// 	txt, err := RenderTrim(p.Config.Template, p)
-	// 	if err != nil {
-	// 		return err
-	// 	}
-	// 	attachment.Text = txt
-	// }
+	if p.Config.Template != "" {
+		txt, err := RenderTrim(p.Config.Template, p)
+		if err != nil {
+			return err
+		}
+		attachment.Text = txt
+	}
 
-	// client := slack.NewWebHook(p.Config.Webhook)
-	// return client.PostMessage(&payload)
+	client := slack.NewWebHook(p.Config.Webhook)
+	return client.PostMessage(&payload)
 }
 
 func message(repo Repo, build Build) string {

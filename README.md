@@ -14,7 +14,7 @@ Drone plugin for sending message to Discord channel using Webhook.
 
 Webhooks are a low-effort way to post messages to channels in Discord. They do not require a bot user or authentication to use. See more [api document information](https://discordapp.com/developers/docs/resources/webhook).
 
-Sending discord message using a binary, docker or [Drone CI](http://docs.drone.io/cli-installation/).
+Sending discord message using a binary, docker or [Drone CI](http://docs.drone.io/).
 
 ## Build or Download a binary
 
