@@ -69,6 +69,10 @@ pipeline:
 
   discord:
     image: appleboy/drone-discord
-    secrets: [ webhook_id, webhook_token ]
+    secrets:
+      - source: webhook_prod_id
+        target: webhook_id
+      - source: webhook_prod_token
+        target: webhook_token
     when:
       status: [ success, failure ]
