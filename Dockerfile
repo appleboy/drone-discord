@@ -1,5 +1,5 @@
 FROM centurylink/ca-certs
 
-ADD drone-line /
+ADD drone-discord /
 
-ENTRYPOINT ["/drone-line"]
+ENTRYPOINT ["/drone-discord"]
