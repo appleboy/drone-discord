@@ -66,3 +66,9 @@ pipeline:
     when:
       event: [ tag ]
       branch: [ refs/tags/* ]
+
+  discord:
+    image: appleboy/drone-discord
+    secrets: [ webhook_id, webhook_token ]
+    when:
+      status: [ success, failure ]
