@@ -56,10 +56,13 @@ func TestSendMessage(t *testing.T) {
 		Config: Config{
 			WebhookID:    os.Getenv("WEBHOOK_ID"),
 			WebhookToken: os.Getenv("WEBHOOK_TOKEN"),
-			Wait:         false,
 			Message:      []string{"test one message from drone testing", "test two message from drone testing"},
-			Username:     "drone-ci",
-			TTS:          false,
+		},
+
+		Form: Form{
+			Username: "drone-ci",
+			TTS:      false,
+			Wait:     false,
 		},
 	}
 
@@ -71,8 +74,8 @@ func TestSendMessage(t *testing.T) {
 	assert.Nil(t, err)
 
 	plugin.Config.Message = []string{"I am appleboy"}
-	plugin.Config.TTS = true
-	plugin.Config.Wait = true
+	plugin.Form.TTS = true
+	plugin.Form.Wait = true
 	err = plugin.Exec()
 	assert.Nil(t, err)
 }

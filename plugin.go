@@ -39,11 +39,15 @@ type (
 		WebhookID    string
 		WebhookToken string
 		Message      []string
-		Wait         bool   `json:"wait"`
-		Content      string `json:"content"`
-		Username     string `json:"username"`
-		AvatarURL    string `json:"avatar_url"`
-		TTS          bool   `json:"tts"`
+	}
+
+	// Form for the plugin.
+	Form struct {
+		Wait      bool   `json:"wait"`
+		Content   string `json:"content"`
+		Username  string `json:"username"`
+		AvatarURL string `json:"avatar_url"`
+		TTS       bool   `json:"tts"`
 	}
 
 	// Plugin values.
@@ -51,6 +55,7 @@ type (
 		Repo   Repo
 		Build  Build
 		Config Config
+		Form   Form
 	}
 )
 
@@ -78,9 +83,10 @@ func (p Plugin) Exec() error {
 		}
 
 		// update content
-		p.Config.Content = txt
+		p.Form.Content = txt
+		fmt.Println(p.Form)
 		b := new(bytes.Buffer)
-		json.NewEncoder(b).Encode(p.Config)
+		json.NewEncoder(b).Encode(p.Form)
 		_, err = http.Post(webhookURL, "application/json; charset=utf-8", b)
 
 		if err != nil {

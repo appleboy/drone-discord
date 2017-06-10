@@ -169,11 +169,13 @@ func run(c *cli.Context) error {
 		Config: Config{
 			WebhookID:    c.String("webhook-id"),
 			WebhookToken: c.String("webhook-token"),
-			Wait:         c.Bool("wait"),
 			Message:      c.StringSlice("message"),
-			Username:     c.String("username"),
-			AvatarURL:    c.String("avatar-url"),
-			TTS:          c.Bool("tts"),
+		},
+		Form: Form{
+			Wait:      c.Bool("wait"),
+			Username:  c.String("username"),
+			AvatarURL: c.String("avatar-url"),
+			TTS:       c.Bool("tts"),
 		},
 	}
 
