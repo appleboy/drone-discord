@@ -8,11 +8,11 @@
 //
 // Send Notification
 //
-// Setup the --to flag after fetch user id from webhook service.
-//
 //   drone-discord \
 //     --webhook-id xxxx \
 //     --webhook-token xxxx \
+//     --username value \
+//     --avatar-url value \
 //     --content "Test Message"
 //
 // For more details, see the documentation and example.
