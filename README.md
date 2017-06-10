@@ -1,4 +1,4 @@
-<img src="discord.png">
+<img src="discord-logo.png">
 
 # drone-[discord](https://discordapp.com)
 
@@ -122,7 +122,7 @@ docker run --rm \
   appleboy/drone-discord
 ```
 
-You can get more [information](DOCS.md) about how to use scp plugin in drone.
+You can get more [information](DOCS.md) about how to use this plugin in drone.
 
 ## Testing
 
