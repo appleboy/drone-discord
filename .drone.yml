@@ -33,7 +33,6 @@ pipeline:
     pull: true
     environment:
       TAGS: netgo
-      GOPATH: /srv/app
     commands:
       - make release
     when:
