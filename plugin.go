@@ -77,7 +77,7 @@ func (p Plugin) Exec() error {
 			return err
 		}
 
-		//
+		// update content
 		p.Config.Content = txt
 		b := new(bytes.Buffer)
 		json.NewEncoder(b).Encode(p.Config)
