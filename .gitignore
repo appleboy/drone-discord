@@ -16,3 +16,4 @@
 drone-discord
 .env
 coverage.txt
+dist/
