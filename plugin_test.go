@@ -37,7 +37,7 @@ func TestDefaultMessageFormat(t *testing.T) {
 	assert.Equal(t, []string{"[success] <https://github.com/appleboy/go-hello> (master)『update by drone line plugin.』by Bo-Yi Wu"}, message)
 }
 
-func TestErrorSendMessage(t *testing.T) {
+func TestSendMessage(t *testing.T) {
 	plugin := Plugin{
 		Repo: Repo{
 			Name:  "go-hello",
@@ -57,7 +57,7 @@ func TestErrorSendMessage(t *testing.T) {
 			WebhookID:    os.Getenv("WEBHOOK_ID"),
 			WebhookToken: os.Getenv("WEBHOOK_TOKEN"),
 			Wait:         false,
-			Content:      []string{"test one message from drone testing", "test two message from drone testing"},
+			Message:      []string{"test one message from drone testing", "test two message from drone testing"},
 			Username:     "drone-ci",
 			TTS:          false,
 		},
@@ -66,7 +66,13 @@ func TestErrorSendMessage(t *testing.T) {
 	err := plugin.Exec()
 	assert.Nil(t, err)
 
-	plugin.Config.Content = []string{}
+	plugin.Config.Message = []string{}
+	err = plugin.Exec()
+	assert.Nil(t, err)
+
+	plugin.Config.Message = []string{"I am appleboy"}
+	plugin.Config.TTS = true
+	plugin.Config.Wait = true
 	err = plugin.Exec()
 	assert.Nil(t, err)
 }

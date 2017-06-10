@@ -18,7 +18,7 @@ pipeline:
     image: appleboy/drone-discord
     webhook_id: xxxxxxxxxx
     webhook_token: xxxxxxxxxx
-    content: "Testing from drone image"
+    message: "Testing from drone image"
 ```
 
 Example configuration with TTS message:
@@ -30,7 +30,7 @@ pipeline:
     webhook_id: xxxxxxxxxx
     webhook_token: xxxxxxxxxx
 +   tts: true
-    content: "Testing from drone image"
+    message: "Testing from drone image"
 ```
 
 Example configuration with override the default username of the webhook:
@@ -42,7 +42,7 @@ pipeline:
     webhook_id: xxxxxxxxxx
     webhook_token: xxxxxxxxxx
 +   username: appleboy
-    content: "Testing from drone image"
+    message: "Testing from drone image"
 ```
 
 Example configuration with override the default avatar of the webhook:
@@ -54,7 +54,7 @@ pipeline:
     webhook_id: xxxxxxxxxx
     webhook_token: xxxxxxxxxx
 +   avatar_url: http://exampple.com/appleboy.png
-    content: "Testing from drone image"
+    message: "Testing from drone image"
 ```
 
 Example configuration with a custom message template:
@@ -65,7 +65,7 @@ pipeline:
     image: appleboy/drone-discord
     webhook_id: xxxxxxxxxx
     webhook_token: xxxxxxxxxx
-+   content: |
++   messageq: |
 +     {{ #success build.status }}
 +       build {{ build.number }} succeeded. Good job.
 +     {{ else }}
@@ -90,7 +90,7 @@ username
 tts
 : true if this is a TTS message
 
-content
+message
 : the message contents (up to 2000 characters)
 
 # Template Reference

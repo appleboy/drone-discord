@@ -69,7 +69,7 @@ There are three ways to send notification.
 drone-discord \
   --webhook-id xxxx \
   --webhook-token xxxx \
-  --content "Test Message"
+  --message "Test Message"
 ```
 
 <a name="usage-from-docker"></a>
@@ -85,7 +85,7 @@ docker run --rm \
   -e TTS=false \
   -e USERNAME=test \
   -e AVATAR_URL=http://example.com/xxxx.png \
-  -e CONTENT=test \
+  -e MESSAGE=test \
   appleboy/drone-discord
 ```
 
@@ -104,7 +104,7 @@ docker run --rm \
   -e TTS=false \
   -e USERNAME=test \
   -e AVATAR_URL=http://example.com/xxxx.png \
-  -e CONTENT=test \
+  -e MESSAGE=test \
   -e DRONE_REPO_OWNER=appleboy \
   -e DRONE_REPO_NAME=go-hello \
   -e DRONE_COMMIT_SHA=e5e82b5eb3737205c25955dcc3dcacc839b7be52 \

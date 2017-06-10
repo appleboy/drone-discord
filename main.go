@@ -36,9 +36,9 @@ func main() {
 			EnvVar: "PLUGIN_WEBHOOK_TOKEN,WEBHOOK_TOKEN",
 		},
 		cli.StringSliceFlag{
-			Name:   "content",
+			Name:   "message",
 			Usage:  "the message contents (up to 2000 characters)",
-			EnvVar: "PLUGIN_CONTENT,CONTENT",
+			EnvVar: "PLUGIN_MESSAGE,MESSAGE",
 		},
 		cli.BoolFlag{
 			Name:   "wait",
@@ -170,7 +170,7 @@ func run(c *cli.Context) error {
 			WebhookID:    c.String("webhook-id"),
 			WebhookToken: c.String("webhook-token"),
 			Wait:         c.Bool("wait"),
-			Content:      c.StringSlice("content"),
+			Message:      c.StringSlice("message"),
 			Username:     c.String("username"),
 			AvatarURL:    c.String("avatar-url"),
 			TTS:          c.Bool("tts"),

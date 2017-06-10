@@ -38,11 +38,12 @@ type (
 	Config struct {
 		WebhookID    string
 		WebhookToken string
-		Wait         bool
-		Content      []string
-		Username     string
-		AvatarURL    string
-		TTS          bool
+		Message      []string
+		Wait         bool   `json:"wait"`
+		Content      string `json:"content"`
+		Username     string `json:"username"`
+		AvatarURL    string `json:"avatar_url"`
+		TTS          bool   `json:"tts"`
 	}
 
 	// Plugin values.
@@ -64,8 +65,8 @@ func (p Plugin) Exec() error {
 	webhookURL := fmt.Sprintf("https://discordapp.com/api/webhooks/%s/%s", p.Config.WebhookID, p.Config.WebhookToken)
 
 	var messages []string
-	if len(p.Config.Content) > 0 {
-		messages = p.Config.Content
+	if len(p.Config.Message) > 0 {
+		messages = p.Config.Message
 	} else {
 		messages = p.Message(p.Repo, p.Build)
 	}
@@ -76,15 +77,10 @@ func (p Plugin) Exec() error {
 			return err
 		}
 
-		content := map[string]interface{}{
-			"wait":       p.Config.Wait,
-			"content":    txt,
-			"username":   p.Config.Username,
-			"avatar_url": p.Config.AvatarURL,
-			"tts":        p.Config.TTS,
-		}
+		//
+		p.Config.Content = txt
 		b := new(bytes.Buffer)
-		json.NewEncoder(b).Encode(content)
+		json.NewEncoder(b).Encode(p.Config)
 		_, err = http.Post(webhookURL, "application/json; charset=utf-8", b)
 
 		if err != nil {

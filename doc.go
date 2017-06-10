@@ -13,7 +13,7 @@
 //     --webhook-token xxxx \
 //     --username value \
 //     --avatar-url value \
-//     --content "Test Message"
+//     --message "Test Message"
 //
 // For more details, see the documentation and example.
 //
