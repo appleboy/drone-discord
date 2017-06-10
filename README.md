@@ -63,105 +63,29 @@ There are three ways to send notification.
 <a name="usage-from-binary"></a>
 ### Usage from binary
 
-#### Setup Webhook service
-
-Setup Webhook service as default port `8088`.
-
-```bash
-drone-discord \
-  --secret xxxx \
-  --token xxxx \
-  webhook
-```
-
-Change default webhook port to `8089`.
-
-```bash
-drone-discord \
-  --port 8089 \
-  --secret xxxx \
-  --token xxxx \
-  webhook
-```
-
-Use [localtunnel](https://localtunnel.github.io/www/) to tunnel your locally running bot so that Line can reach the webhook.
-
-```bash
-drone-discord \
-  -s secret \
-  -t token \
-  --tunnel \
-  --port 2002 \
-  webhook
-```
-
-Use [Let's Encrypt](https://letsencrypt.org/). Please make sure you have permission to listen on `443` port.
-
-```bash
-drone-discord \
-  -s secret \
-  -t token \
-  -autotls \
-  -host example.com \
-  -cache /var/www/.cache \
-  --port 443 \
-  webhook
-```
-
-**Tips:** Another way to use [ngrok](https://ngrok.com/) to tunnel your locally running bot so that Line can reach the webhook.
-
 #### Send Notification
 
-Setup the `--to` flag after fetch user id from webhook service.
-
 ```bash
 drone-discord \
-  --secret xxxx \
-  --token xxxx \
-  --to xxxx \
-  --message "Test Message"
+  --webhook-id xxxx \
+  --webhook-token xxxx \
+  --content "Test Message"
 ```
 
 <a name="usage-from-docker"></a>
 ### Usage from docker
 
-#### Setup Webhook service
-
-Setup Webhook service as default port `8088`.
-
-```bash
-docker run --rm \
-  -e LINE_CHANNEL_SECRET=xxxxxxx \
-  -e LINE_CHANNEL_TOKEN=xxxxxxx \
-  appleboy/drone-discord webhook
-```
-
-Change default webhook port to `8089`.
-
-```bash
-docker run --rm \
-  -e LINE_CHANNEL_SECRET=xxxxxxx \
-  -e LINE_CHANNEL_TOKEN=xxxxxxx \
-  -e LINE_PORT=8089 \
-  appleboy/drone-discord webhook
-```
-
-**Tips:** Use [ngrok](https://ngrok.com/) to tunnel your locally running bot so that Line can reach the webhook.
-
 #### Send Notification
 
 ```bash
 docker run --rm \
-  -e LINE_CHANNEL_SECRET=xxxxxxx \
-  -e LINE_CHANNEL_TOKEN=xxxxxxx \
-  -e LINE_TO=xxxxxxx \
-  -e LINE_MESSAGE=test \
-  -e LINE_IMAGES=https://example.com/1.png \
-  -e LINE_VIDEOS=https://example.com/1.mp4 \
-  -e LINE_AUDIOS=https://example.com/1.mp3::1000 \
-  -e LINE_STICKERS=1::1 \
-  -e LINE_LOCATIONS=title::address::latitude::longitude \
-  -e LINE_DELIMITER=:: \
+  -e WEBHOOK_ID=xxxxxxx \
+  -e WEBHOOK_TOKEN=xxxxxxx \
+  -e WAIT=false \
+  -e TTS=false \
+  -e USERNAME=test \
+  -e AVATAR_URL=http://example.com/xxxx.png \
+  -e CONTENT=test \
   appleboy/drone-discord
 ```
 
@@ -174,17 +98,13 @@ Execute from the working directory:
 
 ```bash
 docker run --rm \
-  -e PLUGIN_CHANNEL_SECRET=xxxxxxx \
-  -e PLUGIN_CHANNEL_TOKEN=xxxxxxx \
-  -e PLUGIN_TO=xxxxxxx \
-  -e PLUGIN_MESSAGE=test \
-  -e PLUGIN_IMAGES=https://example.com/1.png \
-  -e PLUGIN_VIDEOS=https://example.com/1.mp4 \
-  -e PLUGIN_AUDIOS=https://example.com/1.mp3::1000 \
-  -e PLUGIN_STICKERS=1::1 \
-  -e PLUGIN_LOCATIONS=title::address::latitude::longitude \
-  -e PLUGIN_DELIMITER=:: \
-  -e PLUGIN_ONLY_MATCH_EMAIL=false \
+  -e WEBHOOK_ID=xxxxxxx \
+  -e WEBHOOK_TOKEN=xxxxxxx \
+  -e WAIT=false \
+  -e TTS=false \
+  -e USERNAME=test \
+  -e AVATAR_URL=http://example.com/xxxx.png \
+  -e CONTENT=test \
   -e DRONE_REPO_OWNER=appleboy \
   -e DRONE_REPO_NAME=go-hello \
   -e DRONE_COMMIT_SHA=e5e82b5eb3737205c25955dcc3dcacc839b7be52 \
