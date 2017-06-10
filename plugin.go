@@ -1,9 +1,12 @@
 package main
 
 import (
+	"bytes"
+	"encoding/json"
+	"errors"
 	"fmt"
+	"log"
 	"net/http"
-	"strings"
 )
 
 type (
@@ -15,14 +18,18 @@ type (
 
 	// Build information
 	Build struct {
-		Tag    string
-		Event  string
-		Number int
-		Commit string
-		Branch string
-		Author string
-		Status string
-		Link   string
+		Tag      string
+		Event    string
+		Number   int
+		Commit   string
+		Branch   string
+		Author   string
+		Message  string
+		Email    string
+		Status   string
+		Link     string
+		Started  float64
+		Finished float64
 	}
 
 	// Config for the plugin.
@@ -30,7 +37,7 @@ type (
 		WebhookID    string
 		WebhookToken string
 		Wait         bool
-		Content      string
+		Content      []string
 		Username     string
 		AvatarURL    string
 		TTS          bool
@@ -46,64 +53,48 @@ type (
 
 // Exec executes the plugin.
 func (p Plugin) Exec() error {
-	attachment := slack.Attachment{
-		Text:       message(p.Repo, p.Build),
-		Fallback:   fallback(p.Repo, p.Build),
-		Color:      color(p.Build),
-		MarkdownIn: []string{"text", "fallback"},
-		ImageURL:   p.Config.ImageURL,
+	if len(p.Config.WebhookID) == 0 || len(p.Config.WebhookToken) == 0 {
+		log.Println("missing discord config")
+
+		return errors.New("missing discord config")
 	}
 
-	payload := slack.WebHookPostPayload{}
-	payload.Username = p.Config.Username
-	payload.Attachments = []*slack.Attachment{&attachment}
-	payload.IconUrl = p.Config.IconURL
-	payload.IconEmoji = p.Config.IconEmoji
+	webhookURL := fmt.Sprintf("https://discordapp.com/api/webhooks/%s/%s", p.Config.WebhookID, p.Config.WebhookToken)
 
-	if p.Config.Recipient != "" {
-		payload.Channel = prepend("@", p.Config.Recipient)
-	} else if p.Config.Channel != "" {
-		payload.Channel = prepend("#", p.Config.Channel)
+	var messages []string
+	if len(p.Config.Content) > 0 {
+		messages = p.Config.Content
+	} else {
+		messages = p.Message(p.Repo, p.Build)
 	}
 
-	if p.Config.Template != "" {
-		txt, err := RenderTrim(p.Config.Template, p)
+	for _, m := range messages {
+		content := map[string]interface{}{
+			"wait":       p.Config.Wait,
+			"content":    m,
+			"username":   p.Config.Username,
+			"avatar_url": p.Config.AvatarURL,
+			"tts":        p.Config.TTS,
+		}
+		b := new(bytes.Buffer)
+		json.NewEncoder(b).Encode(content)
+		_, err := http.Post(webhookURL, "application/json; charset=utf-8", b)
+
 		if err != nil {
 			return err
 		}
-		attachment.Text = txt
 	}
 
-	client := slack.NewWebHook(p.Config.Webhook)
-	return client.PostMessage(&payload)
+	return nil
 }
 
-func message(repo Repo, build Build) string {
-	return fmt.Sprintf("*%s* <%s|%s/%s#%s> (%s) by %s",
+// Message is plugin default message.
+func (p Plugin) Message(repo Repo, build Build) []string {
+	return []string{fmt.Sprintf("[%s] <%s> (%s)『%s』by %s",
 		build.Status,
 		build.Link,
-		repo.Owner,
-		repo.Name,
-		build.Commit[:8],
 		build.Branch,
+		build.Message,
 		build.Author,
-	)
-}
-
-func fallback(repo Repo, build Build) string {
-	return fmt.Sprintf("%s %s/%s#%s (%s) by %s",
-		build.Status,
-		repo.Owner,
-		repo.Name,
-		build.Commit[:8],
-		build.Branch,
-		build.Author,
-	)
-}
-
-func prepend(prefix, s string) string {
-	if !strings.HasPrefix(s, prefix) {
-		return prefix + s
-	}
-	return s
+	)}
 }
