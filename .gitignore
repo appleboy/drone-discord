@@ -14,3 +14,5 @@
 .glide/
 
 drone-discord
+.env
+coverage.txt

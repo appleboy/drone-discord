@@ -25,13 +25,6 @@ func main() {
 	app.Action = run
 	app.Version = Version
 	app.Flags = []cli.Flag{
-		// WebhookID:    c.String("webhook.id"),
-		// WebhookToken: c.String("webhook.token"),
-		// Wait:         c.Bool("wait"),
-		// Content:      c.StringSlice("content"),
-		// Username:     c.String("username"),
-		// AvatarURL:    c.String("avatarURL"),
-		// TTS:          c.Bool("tts"),
 		cli.StringFlag{
 			Name:   "webhook-id",
 			Usage:  "discord webhook id",
