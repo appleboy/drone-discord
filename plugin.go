@@ -7,6 +7,8 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+
+	"github.com/appleboy/drone-facebook/template"
 )
 
 type (
@@ -69,16 +71,21 @@ func (p Plugin) Exec() error {
 	}
 
 	for _, m := range messages {
+		txt, err := template.RenderTrim(m, p)
+		if err != nil {
+			return err
+		}
+
 		content := map[string]interface{}{
 			"wait":       p.Config.Wait,
-			"content":    m,
+			"content":    txt,
 			"username":   p.Config.Username,
 			"avatar_url": p.Config.AvatarURL,
 			"tts":        p.Config.TTS,
 		}
 		b := new(bytes.Buffer)
 		json.NewEncoder(b).Encode(content)
-		_, err := http.Post(webhookURL, "application/json; charset=utf-8", b)
+		_, err = http.Post(webhookURL, "application/json; charset=utf-8", b)
 
 		if err != nil {
 			return err
