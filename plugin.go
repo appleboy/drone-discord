@@ -119,6 +119,7 @@ func (p *Plugin) Exec() error {
 	}
 
 	// set default message
+	p.Payload.Content = ""
 	p.Message()
 	err := p.Send()
 	if err != nil {
