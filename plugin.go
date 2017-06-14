@@ -72,12 +72,12 @@ type (
 
 	// Payload struct
 	Payload struct {
-		Wait      bool                  `json:"wait"`
-		Content   string                `json:"content"`
-		Username  string                `json:"username"`
-		AvatarURL string                `json:"avatar_url"`
-		TTS       bool                  `json:"tts"`
-		Embeds    []*DiscordEmbedObject `json:"embeds"`
+		Wait      bool           `json:"wait"`
+		Content   string         `json:"content"`
+		Username  string         `json:"username"`
+		AvatarURL string         `json:"avatar_url"`
+		TTS       bool           `json:"tts"`
+		Embeds    []*EmbedObject `json:"embeds"`
 	}
 
 	// Plugin values.
