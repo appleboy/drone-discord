@@ -40,6 +40,11 @@ func main() {
 			Usage:  "the message contents (up to 2000 characters)",
 			EnvVar: "PLUGIN_MESSAGE,MESSAGE",
 		},
+		cli.StringFlag{
+			Name:   "color",
+			Usage:  "color code of the embed",
+			EnvVar: "PLUGIN_COLOR,COLOR",
+		},
 		cli.BoolFlag{
 			Name:   "wait",
 			Usage:  "waits for server confirmation of message send before response, and returns the created message body",
@@ -176,6 +181,7 @@ func run(c *cli.Context) error {
 			WebhookID:    c.String("webhook-id"),
 			WebhookToken: c.String("webhook-token"),
 			Message:      c.StringSlice("message"),
+			Color:        c.String("color"),
 		},
 		Payload: Payload{
 			Wait:      c.Bool("wait"),

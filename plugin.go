@@ -7,6 +7,8 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strconv"
+	"strings"
 
 	"github.com/appleboy/drone-facebook/template"
 )
@@ -39,6 +41,7 @@ type (
 	Config struct {
 		WebhookID    string
 		WebhookToken string
+		Color        string
 		Message      []string
 	}
 
@@ -145,7 +148,7 @@ func (p *Plugin) Message() {
 		{
 			Title: p.Build.Message,
 			URL:   p.Build.Link,
-			Color: color(p.Build),
+			Color: p.Color(),
 			Author: EmbedAuthorObject{
 				Name:    p.Build.Author,
 				IconURL: p.Build.Avatar,
@@ -157,16 +160,24 @@ func (p *Plugin) Message() {
 	}
 }
 
-func color(build Build) int {
-	switch build.Status {
+// Color code of the embed
+func (p *Plugin) Color() int {
+	if p.Config.Color != "" {
+		p.Config.Color = strings.Replace(p.Config.Color, "#", "", -1)
+		if s, err := strconv.ParseInt(p.Config.Color, 16, 32); err == nil {
+			return int(s)
+		}
+	}
+
+	switch p.Build.Status {
 	case "success":
-		// #1ac600
+		// #1ac600 green
 		return 1754624
 	case "failure", "error", "killed":
-		// #ff3232
+		// #ff3232 red
 		return 16724530
 	default:
-		// #ffd930
+		// #ffd930 yellow
 		return 16767280
 	}
 }

@@ -3,6 +3,7 @@ package main
 import (
 	"os"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -48,6 +49,12 @@ func TestSendMessage(t *testing.T) {
 	err := plugin.Exec()
 	assert.Nil(t, err)
 
+	plugin.Config.Message = []string{"I am appleboy"}
+	plugin.Payload.TTS = true
+	plugin.Payload.Wait = true
+	err = plugin.Exec()
+	assert.Nil(t, err)
+
 	// send success embed message
 	plugin.Config.Message = []string{}
 	err = plugin.Exec()
@@ -55,17 +62,20 @@ func TestSendMessage(t *testing.T) {
 
 	// send success embed message
 	plugin.Build.Status = "failure"
+	plugin.Build.Message = "send failure embed message"
 	err = plugin.Exec()
 	assert.Nil(t, err)
+	time.Sleep(1 * time.Second)
 
 	// send default embed message
 	plugin.Build.Status = "test"
+	plugin.Build.Message = "send default embed message"
 	err = plugin.Exec()
 	assert.Nil(t, err)
 
-	plugin.Config.Message = []string{"I am appleboy"}
-	plugin.Payload.TTS = true
-	plugin.Payload.Wait = true
+	//change color for embed message
+	plugin.Config.Color = "#4842f4"
+	plugin.Build.Message = "Change embed color to #4842f4"
 	err = plugin.Exec()
 	assert.Nil(t, err)
 }
