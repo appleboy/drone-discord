@@ -171,7 +171,7 @@ func run(c *cli.Context) error {
 			WebhookToken: c.String("webhook-token"),
 			Message:      c.StringSlice("message"),
 		},
-		Form: Form{
+		Payload: Payload{
 			Wait:      c.Bool("wait"),
 			Username:  c.String("username"),
 			AvatarURL: c.String("avatar-url"),

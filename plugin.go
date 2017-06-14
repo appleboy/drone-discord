@@ -41,21 +41,45 @@ type (
 		Message      []string
 	}
 
-	// Form for the plugin.
-	Form struct {
-		Wait      bool   `json:"wait"`
-		Content   string `json:"content"`
-		Username  string `json:"username"`
-		AvatarURL string `json:"avatar_url"`
-		TTS       bool   `json:"tts"`
+	EmbedFooterObject struct {
+		Text string `json:"text"`
+	}
+
+	EmbedAuthorObject struct {
+		Name    string `json:"name"`
+		URL     string `json:"url"`
+		IconURL string `json:"icon_url"`
+	}
+
+	EmbedFieldObject struct {
+		Name  string `json:"name"`
+		Value string `json:"value"`
+	}
+
+	EmbedObject struct {
+		Title       string              `json:"title"`
+		Description string              `json:"description"`
+		URL         string              `json:"url"`
+		Footer      *EmbedFooterObject  `json:"footer"`
+		Author      *EmbedAuthorObject  `json:"author"`
+		Fields      []*EmbedFieldObject `json:"fields"`
+	}
+
+	Payload struct {
+		Wait      bool                  `json:"wait"`
+		Content   string                `json:"content"`
+		Username  string                `json:"username"`
+		AvatarURL string                `json:"avatar_url"`
+		TTS       bool                  `json:"tts"`
+		Embeds    []*DiscordEmbedObject `json:"embeds"`
 	}
 
 	// Plugin values.
 	Plugin struct {
-		Repo   Repo
-		Build  Build
-		Config Config
-		Form   Form
+		Repo    Repo
+		Build   Build
+		Config  Config
+		Payload Payload
 	}
 )
 
@@ -83,10 +107,9 @@ func (p Plugin) Exec() error {
 		}
 
 		// update content
-		p.Form.Content = txt
-		fmt.Println(p.Form)
+		p.Payload.Content = txt
 		b := new(bytes.Buffer)
-		json.NewEncoder(b).Encode(p.Form)
+		json.NewEncoder(b).Encode(p.Payload)
 		_, err = http.Post(webhookURL, "application/json; charset=utf-8", b)
 
 		if err != nil {

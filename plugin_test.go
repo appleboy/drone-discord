@@ -59,7 +59,7 @@ func TestSendMessage(t *testing.T) {
 			Message:      []string{"test one message from drone testing", "test two message from drone testing"},
 		},
 
-		Form: Form{
+		Payload: Payload{
 			Username: "drone-ci",
 			TTS:      false,
 			Wait:     false,
@@ -74,8 +74,8 @@ func TestSendMessage(t *testing.T) {
 	assert.Nil(t, err)
 
 	plugin.Config.Message = []string{"I am appleboy"}
-	plugin.Form.TTS = true
-	plugin.Form.Wait = true
+	plugin.Payload.TTS = true
+	plugin.Payload.Wait = true
 	err = plugin.Exec()
 	assert.Nil(t, err)
 }
