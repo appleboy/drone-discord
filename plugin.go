@@ -26,6 +26,7 @@ type (
 		Commit   string
 		Branch   string
 		Author   string
+		Avatar   string
 		Message  string
 		Email    string
 		Status   string
@@ -61,23 +62,23 @@ type (
 
 	// EmbedObject is for Embed Structure
 	EmbedObject struct {
-		Title       string              `json:"title"`
-		Description string              `json:"description"`
-		URL         string              `json:"url"`
-		Color       int                 `json:"color"`
-		Footer      *EmbedFooterObject  `json:"footer"`
-		Author      *EmbedAuthorObject  `json:"author"`
-		Fields      []*EmbedFieldObject `json:"fields"`
+		Title       string             `json:"title"`
+		Description string             `json:"description"`
+		URL         string             `json:"url"`
+		Color       int                `json:"color"`
+		Footer      EmbedFooterObject  `json:"footer"`
+		Author      EmbedAuthorObject  `json:"author"`
+		Fields      []EmbedFieldObject `json:"fields"`
 	}
 
 	// Payload struct
 	Payload struct {
-		Wait      bool           `json:"wait"`
-		Content   string         `json:"content"`
-		Username  string         `json:"username"`
-		AvatarURL string         `json:"avatar_url"`
-		TTS       bool           `json:"tts"`
-		Embeds    []*EmbedObject `json:"embeds"`
+		Wait      bool          `json:"wait"`
+		Content   string        `json:"content"`
+		Username  string        `json:"username"`
+		AvatarURL string        `json:"avatar_url"`
+		TTS       bool          `json:"tts"`
+		Embeds    []EmbedObject `json:"embeds"`
 	}
 
 	// Plugin values.
@@ -90,49 +91,82 @@ type (
 )
 
 // Exec executes the plugin.
-func (p Plugin) Exec() error {
+func (p *Plugin) Exec() error {
 	if len(p.Config.WebhookID) == 0 || len(p.Config.WebhookToken) == 0 {
 		log.Println("missing discord config")
 
 		return errors.New("missing discord config")
 	}
 
-	webhookURL := fmt.Sprintf("https://discordapp.com/api/webhooks/%s/%s", p.Config.WebhookID, p.Config.WebhookToken)
-
-	var messages []string
 	if len(p.Config.Message) > 0 {
-		messages = p.Config.Message
-	} else {
-		messages = p.Message(p.Repo, p.Build)
+		for _, m := range p.Config.Message {
+			txt, err := template.RenderTrim(m, p)
+			if err != nil {
+				return err
+			}
+
+			// update content
+			p.Payload.Content = txt
+			err = p.Send()
+			if err != nil {
+				return err
+			}
+		}
+		return nil
 	}
 
-	for _, m := range messages {
-		txt, err := template.RenderTrim(m, p)
-		if err != nil {
-			return err
-		}
+	// set default message
+	p.Message()
+	err := p.Send()
+	if err != nil {
+		return err
+	}
 
-		// update content
-		p.Payload.Content = txt
-		b := new(bytes.Buffer)
-		json.NewEncoder(b).Encode(p.Payload)
-		_, err = http.Post(webhookURL, "application/json; charset=utf-8", b)
+	return nil
+}
 
-		if err != nil {
-			return err
-		}
+// Send discord message.
+func (p *Plugin) Send() error {
+	webhookURL := fmt.Sprintf("https://discordapp.com/api/webhooks/%s/%s", p.Config.WebhookID, p.Config.WebhookToken)
+	b := new(bytes.Buffer)
+	json.NewEncoder(b).Encode(p.Payload)
+	_, err := http.Post(webhookURL, "application/json; charset=utf-8", b)
+
+	if err != nil {
+		return err
 	}
 
 	return nil
 }
 
 // Message is plugin default message.
-func (p Plugin) Message(repo Repo, build Build) []string {
-	return []string{fmt.Sprintf("[%s] <%s> (%s)『%s』by %s",
-		build.Status,
-		build.Link,
-		build.Branch,
-		build.Message,
-		build.Author,
-	)}
+func (p *Plugin) Message() {
+	p.Payload.Embeds = []EmbedObject{
+		{
+			Title: p.Build.Message,
+			URL:   p.Build.Link,
+			Color: color(p.Build),
+			Author: EmbedAuthorObject{
+				Name:    p.Build.Author,
+				IconURL: p.Build.Avatar,
+			},
+			Footer: EmbedFooterObject{
+				Text: "Power by Drone Discord Plugin",
+			},
+		},
+	}
+}
+
+func color(build Build) int {
+	switch build.Status {
+	case "success":
+		// #1ac600
+		return 1754624
+	case "failure", "error", "killed":
+		// #ff3232
+		return 16724530
+	default:
+		// #ffd930
+		return 16767280
+	}
 }

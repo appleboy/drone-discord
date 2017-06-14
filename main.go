@@ -92,6 +92,11 @@ func main() {
 			EnvVar: "DRONE_COMMIT_AUTHOR_EMAIL",
 		},
 		cli.StringFlag{
+			Name:   "commit.author.avatar",
+			Usage:  "git author avatar",
+			EnvVar: "DRONE_COMMIT_AUTHOR_AVATAR",
+		},
+		cli.StringFlag{
 			Name:   "commit.message",
 			Usage:  "commit message",
 			EnvVar: "DRONE_COMMIT_MESSAGE",
@@ -161,6 +166,7 @@ func run(c *cli.Context) error {
 			Branch:   c.String("commit.branch"),
 			Author:   c.String("commit.author"),
 			Email:    c.String("commit.author.email"),
+			Avatar:   c.String("commit.author.avatar"),
 			Message:  c.String("commit.message"),
 			Link:     c.String("build.link"),
 			Started:  c.Float64("job.started"),

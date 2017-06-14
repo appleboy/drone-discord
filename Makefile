@@ -90,7 +90,7 @@ test-vendor:
 	govendor status || exit 1
 
 test: fmt-check
-	for PKG in $(PACKAGES); do go test -cover -coverprofile $$GOPATH/src/$$PKG/coverage.txt $$PKG || exit 1; done;
+	for PKG in $(PACKAGES); do go test -v -cover -coverprofile $$GOPATH/src/$$PKG/coverage.txt $$PKG || exit 1; done;
 
 html:
 	go tool cover -html=coverage.txt

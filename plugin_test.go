@@ -15,28 +15,6 @@ func TestMissingConfig(t *testing.T) {
 	assert.NotNil(t, err)
 }
 
-func TestDefaultMessageFormat(t *testing.T) {
-	plugin := Plugin{
-		Repo: Repo{
-			Name:  "go-hello",
-			Owner: "appleboy",
-		},
-		Build: Build{
-			Number:  101,
-			Status:  "success",
-			Link:    "https://github.com/appleboy/go-hello",
-			Author:  "Bo-Yi Wu",
-			Branch:  "master",
-			Message: "update by drone line plugin.",
-			Commit:  "e7c4f0a63ceeb42a39ac7806f7b51f3f0d204fd2",
-		},
-	}
-
-	message := plugin.Message(plugin.Repo, plugin.Build)
-
-	assert.Equal(t, []string{"[success] <https://github.com/appleboy/go-hello> (master)『update by drone line plugin.』by Bo-Yi Wu"}, message)
-}
-
 func TestSendMessage(t *testing.T) {
 	plugin := Plugin{
 		Repo: Repo{
@@ -49,8 +27,9 @@ func TestSendMessage(t *testing.T) {
 			Link:    "https://github.com/appleboy/go-hello",
 			Author:  "Bo-Yi Wu",
 			Branch:  "master",
-			Message: "update by drone discord plugin.",
+			Message: "update by drone discord plugin. \n update by drone discord plugin.",
 			Commit:  "e7c4f0a63ceeb42a39ac7806f7b51f3f0d204fd2",
+			Avatar:  "https://avatars0.githubusercontent.com/u/21979?v=3&s=100",
 		},
 
 		Config: Config{
@@ -69,7 +48,18 @@ func TestSendMessage(t *testing.T) {
 	err := plugin.Exec()
 	assert.Nil(t, err)
 
+	// send success embed message
 	plugin.Config.Message = []string{}
+	err = plugin.Exec()
+	assert.Nil(t, err)
+
+	// send success embed message
+	plugin.Build.Status = "failure"
+	err = plugin.Exec()
+	assert.Nil(t, err)
+
+	// send default embed message
+	plugin.Build.Status = "test"
 	err = plugin.Exec()
 	assert.Nil(t, err)
 

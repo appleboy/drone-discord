@@ -74,11 +74,5 @@ pipeline:
         target: webhook_id
       - source: webhook_prod_token
         target: webhook_token
-    content: >
-      {{#success build.status}}
-        build {{build.number}} succeeded. Good job.
-      {{else}}
-        build {{build.number}} failed. Fix me please.
-      {{/success}}
     when:
       status: [ success, failure ]
