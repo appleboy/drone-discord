@@ -155,7 +155,7 @@ func (p *Plugin) Message() {
 				IconURL: p.Build.Avatar,
 			},
 			Footer: EmbedFooterObject{
-				Text: "Power by Drone Discord Plugin",
+				Text: "Powered by Drone Discord Plugin",
 			},
 		},
 	}
