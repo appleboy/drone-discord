@@ -47,7 +47,8 @@ type (
 
 	// EmbedFooterObject for Embed Footer Structure.
 	EmbedFooterObject struct {
-		Text string `json:"text"`
+		Text    string `json:"text"`
+		IconURL string `json:"icon_url"`
 	}
 
 	// EmbedAuthorObject for Embed Author Structure
@@ -145,17 +146,29 @@ func (p *Plugin) Send() error {
 
 // Message is plugin default message.
 func (p *Plugin) Message() {
+	description := ""
+	switch p.Build.Event {
+	case "push":
+		description = fmt.Sprintf("%s pushed to %s", p.Build.Author, p.Build.Branch)
+	case "pull_request":
+		description = fmt.Sprintf("%s created pull request %s", p.Build.Author, p.Build.Branch)
+	case "tag":
+		description = fmt.Sprintf("%s pushed tag %s", p.Build.Author, p.Build.Branch)
+	}
+
 	p.Payload.Embeds = []EmbedObject{
 		{
-			Title: p.Build.Message,
-			URL:   p.Build.Link,
-			Color: p.Color(),
+			Title:       p.Build.Message,
+			Description: description,
+			URL:         p.Build.Link,
+			Color:       p.Color(),
 			Author: EmbedAuthorObject{
 				Name:    p.Build.Author,
 				IconURL: p.Build.Avatar,
 			},
 			Footer: EmbedFooterObject{
-				Text: "Powered by Drone Discord Plugin",
+				Text:    "Powered by Drone Discord Plugin",
+				IconURL: "https://c1.staticflickr.com/5/4236/34957940160_435d83114f_z.jpg",
 			},
 		},
 	}
