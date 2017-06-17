@@ -26,6 +26,7 @@ type (
 		Event    string
 		Number   int
 		Commit   string
+		RefSpec  string
 		Branch   string
 		Author   string
 		Avatar   string
@@ -171,7 +172,13 @@ func (p *Plugin) DroneTemplate() EmbedObject {
 	case "push":
 		description = fmt.Sprintf("%s pushed to %s", p.Build.Author, p.Build.Branch)
 	case "pull_request":
-		description = fmt.Sprintf("%s created pull request %s", p.Build.Author, p.Build.Branch)
+		branch := ""
+		if p.Build.RefSpec != "" {
+			branch = p.Build.RefSpec
+		} else {
+			branch = p.Build.Branch
+		}
+		description = fmt.Sprintf("%s updated pull request %s", p.Build.Author, branch)
 	case "tag":
 		description = fmt.Sprintf("%s pushed tag %s", p.Build.Author, p.Build.Branch)
 	}
