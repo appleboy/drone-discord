@@ -16,7 +16,7 @@ func TestMissingConfig(t *testing.T) {
 	assert.NotNil(t, err)
 }
 
-func TestSendMessage(t *testing.T) {
+func TestDroneTemplate(t *testing.T) {
 	plugin := Plugin{
 		Repo: Repo{
 			Name:  "go-hello",
@@ -42,7 +42,7 @@ func TestSendMessage(t *testing.T) {
 		},
 
 		Payload: Payload{
-			Username: "drone-ci",
+			Username: "drone",
 			TTS:      false,
 			Wait:     false,
 		},
@@ -51,6 +51,7 @@ func TestSendMessage(t *testing.T) {
 	err := plugin.Exec()
 	assert.Nil(t, err)
 
+	clear(&plugin)
 	plugin.Config.Message = []string{"I am appleboy"}
 	plugin.Payload.TTS = true
 	plugin.Payload.Wait = true
@@ -59,12 +60,16 @@ func TestSendMessage(t *testing.T) {
 
 	// send success embed message
 	plugin.Config.Message = []string{}
+	plugin.Payload.TTS = false
+	plugin.Payload.Wait = false
+	clear(&plugin)
 	err = plugin.Exec()
 	assert.Nil(t, err)
 
 	// send success embed message
 	plugin.Build.Status = "failure"
 	plugin.Build.Message = "send failure embed message"
+	clear(&plugin)
 	err = plugin.Exec()
 	assert.Nil(t, err)
 	time.Sleep(1 * time.Second)
@@ -72,12 +77,48 @@ func TestSendMessage(t *testing.T) {
 	// send default embed message
 	plugin.Build.Status = "test"
 	plugin.Build.Message = "send default embed message"
+	clear(&plugin)
 	err = plugin.Exec()
 	assert.Nil(t, err)
 
 	//change color for embed message
 	plugin.Config.Color = "#4842f4"
 	plugin.Build.Message = "Change embed color to #4842f4"
+	clear(&plugin)
 	err = plugin.Exec()
 	assert.Nil(t, err)
+}
+
+func TestDefaultTemplate(t *testing.T) {
+	plugin := Plugin{
+		Config: Config{
+			WebhookID:    os.Getenv("WEBHOOK_ID"),
+			WebhookToken: os.Getenv("WEBHOOK_TOKEN"),
+			Message:      []string{"default message 1", "default message 2"},
+			Color:        "#48f442",
+		},
+
+		Payload: Payload{
+			Username: "drone-ci",
+			TTS:      false,
+			Wait:     false,
+		},
+	}
+
+	time.Sleep(1 * time.Second)
+	clear(&plugin)
+	err := plugin.Exec()
+	assert.Nil(t, err)
+
+	plugin.Config.Color = "#f4be41"
+	time.Sleep(1 * time.Second)
+	clear(&plugin)
+	err = plugin.Exec()
+	assert.Nil(t, err)
+}
+
+func clear(p *Plugin) {
+	// clear content field.
+	p.Payload.Content = ""
+	p.Payload.Embeds = []EmbedObject{}
 }

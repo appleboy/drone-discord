@@ -103,7 +103,7 @@ func (p *Plugin) Exec() error {
 		return errors.New("missing discord config")
 	}
 
-	if p.Config.Drone {
+	if p.Config.Drone && len(p.Config.Message) == 0 {
 		object := p.DroneTemplate()
 		p.Payload.Embeds = []EmbedObject{object}
 		err := p.Send()
@@ -119,9 +119,20 @@ func (p *Plugin) Exec() error {
 				return err
 			}
 
-			// update content
-			p.Payload.Content = txt
-			err = p.Send()
+			if len(p.Config.Color) != 0 {
+				object := p.DefaultTemplate(txt)
+				p.Payload.Embeds = append(p.Payload.Embeds, object)
+			} else {
+				p.Payload.Content = txt
+				err = p.Send()
+				if err != nil {
+					return err
+				}
+			}
+		}
+
+		if len(p.Payload.Embeds) > 0 {
+			err := p.Send()
 			if err != nil {
 				return err
 			}
@@ -143,6 +154,14 @@ func (p *Plugin) Send() error {
 	}
 
 	return nil
+}
+
+// DefaultTemplate is plugin default template for Drone CI.
+func (p *Plugin) DefaultTemplate(title string) EmbedObject {
+	return EmbedObject{
+		Title: title,
+		Color: p.Color(),
+	}
 }
 
 // DroneTemplate is plugin default template for Drone CI.
