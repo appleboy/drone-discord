@@ -104,7 +104,8 @@ func (p *Plugin) Exec() error {
 	}
 
 	if p.Config.Drone {
-		p.DroneTemplate()
+		object := p.DroneTemplate()
+		p.Payload.Embeds = []EmbedObject{object}
 		err := p.Send()
 		if err != nil {
 			return err
@@ -145,7 +146,7 @@ func (p *Plugin) Send() error {
 }
 
 // DroneTemplate is plugin default template for Drone CI.
-func (p *Plugin) DroneTemplate() {
+func (p *Plugin) DroneTemplate() EmbedObject {
 	description := ""
 	switch p.Build.Event {
 	case "push":
@@ -156,20 +157,18 @@ func (p *Plugin) DroneTemplate() {
 		description = fmt.Sprintf("%s pushed tag %s", p.Build.Author, p.Build.Branch)
 	}
 
-	p.Payload.Embeds = []EmbedObject{
-		{
-			Title:       p.Build.Message,
-			Description: description,
-			URL:         p.Build.Link,
-			Color:       p.Color(),
-			Author: EmbedAuthorObject{
-				Name:    p.Build.Author,
-				IconURL: p.Build.Avatar,
-			},
-			Footer: EmbedFooterObject{
-				Text:    "Powered by Drone Discord Plugin",
-				IconURL: "https://c1.staticflickr.com/5/4236/34957940160_435d83114f_z.jpg",
-			},
+	return EmbedObject{
+		Title:       p.Build.Message,
+		Description: description,
+		URL:         p.Build.Link,
+		Color:       p.Color(),
+		Author: EmbedAuthorObject{
+			Name:    p.Build.Author,
+			IconURL: p.Build.Avatar,
+		},
+		Footer: EmbedFooterObject{
+			Text:    "Powered by Drone Discord Plugin",
+			IconURL: "https://c1.staticflickr.com/5/4236/34957940160_435d83114f_z.jpg",
 		},
 	}
 }
