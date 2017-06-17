@@ -65,6 +65,11 @@ func main() {
 			Usage:  "override the default avatar of the webhook",
 			EnvVar: "PLUGIN_AVATAR_URL,AVATAR_URL",
 		},
+		cli.BoolFlag{
+			Name:   "drone",
+			Usage:  "environment is drone",
+			EnvVar: "DRONE",
+		},
 		cli.StringFlag{
 			Name:   "repo.owner",
 			Usage:  "repository owner",
@@ -182,6 +187,7 @@ func run(c *cli.Context) error {
 			WebhookToken: c.String("webhook-token"),
 			Message:      c.StringSlice("message"),
 			Color:        c.String("color"),
+			Drone:        c.Bool("drone"),
 		},
 		Payload: Payload{
 			Wait:      c.Bool("wait"),

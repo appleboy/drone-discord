@@ -38,6 +38,7 @@ func TestSendMessage(t *testing.T) {
 			WebhookID:    os.Getenv("WEBHOOK_ID"),
 			WebhookToken: os.Getenv("WEBHOOK_TOKEN"),
 			Message:      []string{"test one message from drone testing", "test two message from drone testing"},
+			Drone:        true,
 		},
 
 		Payload: Payload{

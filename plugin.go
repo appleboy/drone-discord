@@ -43,6 +43,7 @@ type (
 		WebhookToken string
 		Color        string
 		Message      []string
+		Drone        bool
 	}
 
 	// EmbedFooterObject for Embed Footer Structure.
@@ -102,6 +103,14 @@ func (p *Plugin) Exec() error {
 		return errors.New("missing discord config")
 	}
 
+	if p.Config.Drone {
+		p.DroneTemplate()
+		err := p.Send()
+		if err != nil {
+			return err
+		}
+	}
+
 	if len(p.Config.Message) > 0 {
 		for _, m := range p.Config.Message {
 			txt, err := template.RenderTrim(m, p)
@@ -116,15 +125,6 @@ func (p *Plugin) Exec() error {
 				return err
 			}
 		}
-		return nil
-	}
-
-	// set default message
-	p.Payload.Content = ""
-	p.Message()
-	err := p.Send()
-	if err != nil {
-		return err
 	}
 
 	return nil
@@ -144,8 +144,8 @@ func (p *Plugin) Send() error {
 	return nil
 }
 
-// Message is plugin default message.
-func (p *Plugin) Message() {
+// DroneTemplate is plugin default template for Drone CI.
+func (p *Plugin) DroneTemplate() {
 	description := ""
 	switch p.Build.Event {
 	case "push":
