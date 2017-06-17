@@ -86,9 +86,9 @@ func main() {
 			EnvVar: "DRONE_COMMIT_SHA",
 		},
 		cli.StringFlag{
-			Name:   "commit.ref",
-			Usage:  "git commit ref",
-			EnvVar: "DRONE_COMMIT_REF",
+			Name:   "commit.refspec",
+			Usage:  "git commit ref spec",
+			EnvVar: "DRONE_COMMIT_REFSPEC",
 		},
 		cli.StringFlag{
 			Name:   "commit.branch",
@@ -178,7 +178,7 @@ func run(c *cli.Context) error {
 			Event:    c.String("build.event"),
 			Status:   c.String("build.status"),
 			Commit:   c.String("commit.sha"),
-			Ref:      c.String("commit.ref"),
+			RefSpec:  c.String("commit.refspec"),
 			Branch:   c.String("commit.branch"),
 			Author:   c.String("commit.author"),
 			Email:    c.String("commit.author.email"),
