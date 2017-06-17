@@ -13,6 +13,13 @@ import (
 	"github.com/appleboy/drone-facebook/template"
 )
 
+const (
+	// DroneIconURL default drone logo url
+	DroneIconURL = "https://c1.staticflickr.com/5/4236/34957940160_435d83114f_z.jpg"
+	// DroneDesc default drone description
+	DroneDesc = "Powered by Drone Discord Plugin"
+)
+
 type (
 	// Repo information
 	Repo struct {
@@ -193,8 +200,8 @@ func (p *Plugin) DroneTemplate() EmbedObject {
 			IconURL: p.Build.Avatar,
 		},
 		Footer: EmbedFooterObject{
-			Text:    "Powered by Drone Discord Plugin",
-			IconURL: "https://c1.staticflickr.com/5/4236/34957940160_435d83114f_z.jpg",
+			Text:    DroneDesc,
+			IconURL: DroneIconURL,
 		},
 	}
 }
