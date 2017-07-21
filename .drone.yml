@@ -31,8 +31,6 @@ pipeline:
   codecov:
     image: robertstettner/drone-codecov
     secrets: [ codecov_token ]
-    files:
-      - .cover/coverage.txt
     when:
       event: [ push, pull_request ]
       status: [ success ]
