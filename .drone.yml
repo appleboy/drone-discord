@@ -14,7 +14,7 @@ pipeline:
     pull: true
     environment:
       TAGS: netgo
-    secrets: [ webhook_id, webhook_token, codecov_token ]
+    secrets: [ webhook_id, webhook_token ]
     commands:
       - make vet
       - make lint
@@ -27,6 +27,15 @@ pipeline:
       - make static_build
     when:
       event: [ push, tag, pull_request ]
+
+  codecov:
+    image: robertstettner/drone-codecov
+    secrets: [ codecov_token ]
+    files:
+      - .cover/coverage.txt
+    when:
+      event: [ push, pull_request ]
+      status: [ success ]
 
   release:
     image: appleboy/golang-testing
