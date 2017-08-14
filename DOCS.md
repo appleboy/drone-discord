@@ -18,7 +18,6 @@ pipeline:
     image: appleboy/drone-discord
     webhook_id: xxxxxxxxxx
     webhook_token: xxxxxxxxxx
-    message: "Testing from drone image"
 ```
 
 Example configuration with TTS message:
@@ -65,13 +64,33 @@ pipeline:
     image: appleboy/drone-discord
     webhook_id: xxxxxxxxxx
     webhook_token: xxxxxxxxxx
-+   messageq: |
++   message: |
 +     {{ #success build.status }}
 +       build {{ build.number }} succeeded. Good job.
 +     {{ else }}
 +       build {{ build.number }} failed. Fix me please.
 +     {{ /success }}
 ```
+
+Example configuration using credentials from secrets:
+
+```diff
+pipeline:
+  discord:
+    image: appleboy/drone-discord
+-   webhook_id: xxxxxxxxxx
+-   webhook_token: xxxxxxxxxx
++   secrets: [ discord_webhook_id, discord_webhook_token ]
+    message: "Testing from drone image"
+```
+
+# Secret Reference
+
+discord_webhook_id
+: discord webhook id
+
+discord_webhook_token
+: discord webhook token
 
 # Parameter Reference
 
