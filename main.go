@@ -28,12 +28,12 @@ func main() {
 		cli.StringFlag{
 			Name:   "webhook-id",
 			Usage:  "discord webhook id",
-			EnvVar: "PLUGIN_WEBHOOK_ID,WEBHOOK_ID",
+			EnvVar: "PLUGIN_WEBHOOK_ID,WEBHOOK_ID,DISCORD_WEBHOOK_ID",
 		},
 		cli.StringFlag{
 			Name:   "webhook-token",
 			Usage:  "discord webhook token",
-			EnvVar: "PLUGIN_WEBHOOK_TOKEN,WEBHOOK_TOKEN",
+			EnvVar: "PLUGIN_WEBHOOK_TOKEN,WEBHOOK_TOKEN,DISCORD_WEBHOOK_TOKEN",
 		},
 		cli.StringSliceFlag{
 			Name:   "message",
