@@ -20,7 +20,7 @@ pipeline:
     webhook_token: xxxxxxxxxx
 ```
 
-Example configuration with TTS message:
+Example configuration with TTS (text-to-speech) message:
 
 ```diff
 pipeline:
@@ -60,7 +60,7 @@ Example configuration with a custom message template:
 
 ```diff
 pipeline:
-  facebook:
+  discord:
     image: appleboy/drone-discord
     webhook_id: xxxxxxxxxx
     webhook_token: xxxxxxxxxx
