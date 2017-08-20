@@ -23,6 +23,7 @@ pipeline:
     image: appleboy/golang-testing
     pull: true
     group: golang
+    secrets: [ webhook_id, webhook_token ]
     commands:
       - make test
       - make coverage
