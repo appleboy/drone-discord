@@ -33,7 +33,7 @@ pipeline:
     pull: true
     group: golang
     commands:
-      - make static_build
+      - make docker_build
 
   codecov:
     image: robertstettner/drone-codecov
