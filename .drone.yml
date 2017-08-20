@@ -31,6 +31,7 @@ pipeline:
   build:
     image: appleboy/golang-testing
     pull: true
+    group: golang
     commands:
       - make static_build
 
