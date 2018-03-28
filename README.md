@@ -1,4 +1,4 @@
-<img src="discord-logo.png">
+<img src="images/discord-logo.png">
 
 # drone-[discord](https://discordapp.com)
 
