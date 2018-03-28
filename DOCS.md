@@ -64,12 +64,12 @@ pipeline:
     image: appleboy/drone-discord
     webhook_id: xxxxxxxxxx
     webhook_token: xxxxxxxxxx
-+   message: |
-+     {{ #success build.status }}
-+       build {{ build.number }} succeeded. Good job.
-+     {{ else }}
-+       build {{ build.number }} failed. Fix me please.
-+     {{ /success }}
++   message: >
++     {{#success build.status}}
++       build {{build.number}} succeeded. Good job.
++     {{else}}
++       build {{build.number}} failed. Fix me please.
++     {{/success}}
 ```
 
 Example configuration using credentials from secrets:
