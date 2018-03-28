@@ -31,13 +31,12 @@ build_script:
         $version = $env:APPVEYOR_REPO_TAG_NAME
         go build -ldflags "-X main.Version=$version -X main.BuildNum=$env:APPVEYOR_BUILD_VERSION" -a -o release/drone-discord.exe
       }
-      dir
       docker pull microsoft/nanoserver:10.0.14393.1884
       docker build -f Dockerfile.windows -t appleboy/drone-discord:windows-amd64 .
 
 test_script:
   - ps: |
-      docker run --rm appleboy/drone-discord:windows --version
+      docker run --rm appleboy/drone-discord:windows-amd64 --version
 
 deploy_script:
   - ps: |
