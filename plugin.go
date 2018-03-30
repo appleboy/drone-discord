@@ -104,64 +104,57 @@ type (
 )
 
 // Exec executes the plugin.
-func (p *Plugin) Exec() error {
-	if len(p.Config.WebhookID) == 0 || len(p.Config.WebhookToken) == 0 {
+func (p *Plugin) Exec() (err error) {
+	if p.Config.WebhookID == "" || p.Config.WebhookToken == "" {
 		log.Println("missing discord config")
-
 		return errors.New("missing discord config")
 	}
 
 	if p.Config.Drone && len(p.Config.Message) == 0 {
 		object := p.DroneTemplate()
 		p.Payload.Embeds = []EmbedObject{object}
-		err := p.Send()
+		return p.Send()
+	}
+
+	for _, m := range p.Config.Message {
+		var txt string
+		txt, err = template.RenderTrim(m, p)
 		if err != nil {
-			return err
-		}
-	}
-
-	if len(p.Config.Message) > 0 {
-		for _, m := range p.Config.Message {
-			txt, err := template.RenderTrim(m, p)
-			if err != nil {
-				return err
-			}
-
-			if len(p.Config.Color) != 0 {
-				object := p.DefaultTemplate(txt)
-				p.Payload.Embeds = append(p.Payload.Embeds, object)
-			} else {
-				p.Payload.Content = txt
-				err = p.Send()
-				if err != nil {
-					return err
-				}
-			}
+			return
 		}
 
-		if len(p.Payload.Embeds) > 0 {
-			err := p.Send()
-			if err != nil {
-				return err
+		if p.Config.Color != "" {
+			object := p.DefaultTemplate(txt)
+			p.Payload.Embeds = append(p.Payload.Embeds, object)
+		} else {
+			p.Payload.Content = txt
+			if err = p.Send(); err != nil {
+				return
 			}
 		}
 	}
 
-	return nil
+	if len(p.Payload.Embeds) > 0 {
+		if err = p.Send(); err != nil {
+			return
+		}
+	}
+
+	return
 }
 
 // Send discord message.
-func (p *Plugin) Send() error {
+func (p *Plugin) Send() (err error) {
 	webhookURL := fmt.Sprintf("https://discordapp.com/api/webhooks/%s/%s", p.Config.WebhookID, p.Config.WebhookToken)
-	b := new(bytes.Buffer)
-	json.NewEncoder(b).Encode(p.Payload)
-	_, err := http.Post(webhookURL, "application/json; charset=utf-8", b)
 
-	if err != nil {
-		return err
+	b := new(bytes.Buffer)
+
+	if err = json.NewEncoder(b).Encode(p.Payload); err != nil {
+		return
 	}
 
-	return nil
+	_, err = http.Post(webhookURL, "application/json; charset=utf-8", b)
+	return
 }
 
 // DefaultTemplate is plugin default template for Drone CI.
@@ -174,12 +167,13 @@ func (p *Plugin) DefaultTemplate(title string) EmbedObject {
 
 // DroneTemplate is plugin default template for Drone CI.
 func (p *Plugin) DroneTemplate() EmbedObject {
-	description := ""
+	var description string
+
 	switch p.Build.Event {
 	case "push":
 		description = fmt.Sprintf("%s pushed to %s", p.Build.Author, p.Build.Branch)
 	case "pull_request":
-		branch := ""
+		var branch string
 		if p.Build.RefSpec != "" {
 			branch = p.Build.RefSpec
 		} else {
@@ -217,13 +211,10 @@ func (p *Plugin) Color() int {
 
 	switch p.Build.Status {
 	case "success":
-		// #1ac600 green
-		return 1754624
+		return 0x1ac600 // green
 	case "failure", "error", "killed":
-		// #ff3232 red
-		return 16724530
+		return 0xff3232 // red
 	default:
-		// #ffd930 yellow
-		return 16767280
+		return 0xffd930 // yellow
 	}
 }
