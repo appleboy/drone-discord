@@ -48,13 +48,13 @@ deploy_script:
           $major,$minor,$patch = $env:APPVEYOR_REPO_TAG_NAME.split('.')
           docker push appleboy/drone-discord:windows-amd64
 
-          docker tag appleboy/drone-discord:windows appleboy/drone-discord:$major.$minor.$patch-windows
+          docker tag appleboy/drone-discord:windows-amd64 appleboy/drone-discord:$major.$minor.$patch-windows-amd64
           docker push appleboy/drone-discord:$major.$minor.$patch-windows-amd64
 
-          docker tag appleboy/drone-discord:windows appleboy/drone-discord:$major.$minor-windows
+          docker tag appleboy/drone-discord:windows-amd64 appleboy/drone-discord:$major.$minor-windows-amd64
           docker push appleboy/drone-discord:$major.$minor-windows-amd64
 
-          docker tag appleboy/drone-discord:windows appleboy/drone-discord:$major-windows
+          docker tag appleboy/drone-discord:windows-amd64 appleboy/drone-discord:$major-windows-amd64
           docker push appleboy/drone-discord:$major-windows-amd64
         } else {
           if ( $env:APPVEYOR_REPO_BRANCH -eq 'master' ) {
