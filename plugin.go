@@ -154,7 +154,9 @@ func (p *Plugin) Exec() error {
 func (p *Plugin) Send() error {
 	webhookURL := fmt.Sprintf("https://discordapp.com/api/webhooks/%s/%s", p.Config.WebhookID, p.Config.WebhookToken)
 	b := new(bytes.Buffer)
-	json.NewEncoder(b).Encode(p.Payload)
+	if err := json.NewEncoder(b).Encode(p.Payload); err != nil {
+		return err
+	}
 	_, err := http.Post(webhookURL, "application/json; charset=utf-8", b)
 
 	if err != nil {
