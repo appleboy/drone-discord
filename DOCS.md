@@ -132,6 +132,9 @@ build.number
 build.commit
 : git sha for current commit
 
+build.message
+: git commit messsage for current commit
+
 build.branch
 : git branch for current commit
 
