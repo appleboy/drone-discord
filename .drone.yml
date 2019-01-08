@@ -25,6 +25,8 @@ pipeline:
     pull: true
     group: golang
     secrets: [ webhook_id, webhook_token ]
+    environment:
+      GO111MODULE: "on"
     commands:
       - make test
       - make coverage
