@@ -13,14 +13,15 @@ pipeline:
     image: golang:1.11
     pull: true
     group: golang
+    environment:
+      GO111MODULE: "on"
     commands:
       - make vet
       - make lint
-      - make test-vendor
       - make misspell-check
 
   test:
-    image: appleboy/golang-testing:1.10.0
+    image: golang:1.11
     pull: true
     group: golang
     secrets: [ webhook_id, webhook_token ]
@@ -28,7 +29,7 @@ pipeline:
       - make test
       - make coverage
 
-  build_linux_amd64_with_module:
+  build_linux_amd64:
     image: golang:1.11
     pull: true
     group: build
@@ -37,17 +38,12 @@ pipeline:
     commands:
       - make build_linux_amd64
 
-  build_linux_amd64:
-    image: golang:1.11
-    pull: true
-    group: build
-    commands:
-      - make build_linux_amd64
-
   build_linux_i386:
     image: golang:1.11
     pull: true
     group: build
+    environment:
+      GO111MODULE: "on"
     commands:
       - make build_linux_i386
 
@@ -55,6 +51,8 @@ pipeline:
     image: golang:1.11
     pull: true
     group: build
+    environment:
+      GO111MODULE: "on"
     commands:
       - make build_linux_arm64
 
@@ -62,6 +60,8 @@ pipeline:
     image: golang:1.11
     pull: true
     group: build
+    environment:
+      GO111MODULE: "on"
     commands:
       - make build_linux_arm
 
