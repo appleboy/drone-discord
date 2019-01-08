@@ -2,10 +2,17 @@ github.com/appleboy/drone-facebook v0.0.0-20170430101616-fdda56ebba0f h1:X+DQ0ay
 github.com/appleboy/drone-facebook v0.0.0-20170430101616-fdda56ebba0f/go.mod h1:5PxqvgIcQy+Je2Rde2tbxGUG9/emkCHkFqZg/8vf4ZA=
 github.com/aymerick/raymond v0.0.0-20161209220724-72acac220747 h1:gu88ZN3sXG5+1mH0W4Ty00jzHA044ND3ogxmJNN6Rik=
 github.com/aymerick/raymond v0.0.0-20161209220724-72acac220747/go.mod h1:osfaiScAUVup+UC9Nfq76eWqDhXlp+4UYaA8uhTBO6g=
+github.com/davecgh/go-spew v1.1.0 h1:ZDRjVQ15GmhC3fiQ8ni8+OwkZQO4DARzQgrnXU1Liz8=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/joho/godotenv v0.0.0-20170328200154-325433c502d4 h1:4efwqN/95XpF2pyttkH2f288+TcG0jFQUk0avks7zes=
 github.com/joho/godotenv v0.0.0-20170328200154-325433c502d4/go.mod h1:7hK45KPybAkOC6peb+G5yklZfMxEjkZhHbwpqxOKXbg=
+github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
+github.com/stretchr/testify v0.0.0-20170601210322-f6abca593680 h1:k3Cv7ttquofwySV/QIpSg4f2UYl/sPXAoTKIxO9CNGc=
 github.com/stretchr/testify v0.0.0-20170601210322-f6abca593680/go.mod h1:a8OnRcib4nhh0OaRAV+Yts87kKdq0PP7pXfy6kDkUVs=
 github.com/urfave/cli v0.0.0-20170506042529-d70f47eeca3a h1:QCKpTIKfYPSx19VYrRHtsbShQVfIFzBFe3pO/wBUOc8=
 github.com/urfave/cli v0.0.0-20170506042529-d70f47eeca3a/go.mod h1:70zkFmudgCuE/ngEzBv17Jvp/497gISqfk5gWijbERA=
+gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405 h1:yhCVgyC4o1eVCa2tZl7eS0r+SDo693bJlVdllGtEeKM=
+gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=
+gopkg.in/yaml.v2 v2.2.2 h1:ZCJp+EgiOT7lHqUV2J862kp8Qj64Jo6az82+3Td9dZw=
+gopkg.in/yaml.v2 v2.2.2/go.mod h1:hI93XBmqTisBFMUTm0b8Fm+jr3Dg1NNxqwp+5A1VGuI=
