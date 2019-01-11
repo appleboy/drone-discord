@@ -89,7 +89,7 @@ func main() {
 		cli.StringFlag{
 			Name:   "commit.refspec",
 			Usage:  "git commit ref spec",
-			EnvVar: "DRONE_COMMIT_REFSPEC",
+			EnvVar: "DRONE_COMMIT_REF",
 		},
 		cli.StringFlag{
 			Name:   "commit.branch",
