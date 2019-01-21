@@ -14,7 +14,7 @@ pipeline:
     pull: true
     group: golang
     environment:
-      GO111MODULE: "on"
+      - GO111MODULE=on
     commands:
       - make vet
       - make lint
@@ -26,7 +26,7 @@ pipeline:
     group: golang
     secrets: [ webhook_id, webhook_token ]
     environment:
-      GO111MODULE: "on"
+      - GO111MODULE=on
     commands:
       - make test
       - make coverage
@@ -36,7 +36,7 @@ pipeline:
     pull: true
     group: build
     environment:
-      GO111MODULE: "on"
+      - GO111MODULE=on
     commands:
       - make build_linux_amd64
 
@@ -45,7 +45,7 @@ pipeline:
     pull: true
     group: build
     environment:
-      GO111MODULE: "on"
+      - GO111MODULE=on
     commands:
       - make build_linux_i386
 
@@ -54,7 +54,7 @@ pipeline:
     pull: true
     group: build
     environment:
-      GO111MODULE: "on"
+      - GO111MODULE=on
     commands:
       - make build_linux_arm64
 
@@ -63,7 +63,7 @@ pipeline:
     pull: true
     group: build
     environment:
-      GO111MODULE: "on"
+      - GO111MODULE=on
     commands:
       - make build_linux_arm
 
