@@ -1,10 +1,9 @@
-FROM plugins/base:multiarch
+FROM plugins/base:windows-amd64
 
 LABEL maintainer="Bo-Yi Wu <appleboy.tw@gmail.com>" \
   org.label-schema.name="Drone Discord" \
   org.label-schema.vendor="Bo-Yi Wu" \
   org.label-schema.schema-version="1.0"
 
-ADD release/linux/i386/drone-discord /bin/
-
-ENTRYPOINT ["/bin/drone-discord"]
+ADD release/drone-discord.exe /drone-discord.exe
+ENTRYPOINT [ "\\drone-discord.exe" ]

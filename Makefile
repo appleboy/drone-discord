@@ -77,7 +77,7 @@ fmt-check:
 	fi;
 
 test: fmt-check
-	for PKG in $(PACKAGES); do $(GO) test -v -cover -coverprofile $$GOPATH/src/$$PKG/coverage.txt $$PKG || exit 1; done;
+	$(GO) test -v -cover -coverprofile coverage.txt ./... || exit 1
 
 html:
 	$(GO) tool cover -html=coverage.txt
