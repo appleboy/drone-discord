@@ -39,6 +39,10 @@ steps:
   - make coverage
   environment:
     GO111MODULE: on
+    WEBHOOK_ID:
+      from_secret: webhook_id
+    WEBHOOK_TOKEN:
+      from_secret: webhook_token
 
 - name: codecov
   pull: always
@@ -300,3 +304,5 @@ depends_on:
 - linux-amd64
 - linux-arm64
 - linux-arm
+
+...

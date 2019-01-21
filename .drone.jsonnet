@@ -45,6 +45,8 @@ local PipelineTesting = {
       pull: "always",
       environment: {
         GO111MODULE: "on",
+        WEBHOOK_ID: { "from_secret": "webhook_id" },
+        WEBHOOK_TOKEN: { "from_secret": "webhook_token" },
       },
       commands: [
         "make test",
