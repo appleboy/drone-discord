@@ -153,6 +153,9 @@ local PipelineNotifications = {
     os: "linux",
     arch: "amd64",
   },
+  clone: {
+    disable: true,
+  },
   steps: [
     {
       name: "microbadger",
