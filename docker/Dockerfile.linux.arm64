@@ -1,4 +1,4 @@
-FROM plugins/base:multiarch
+FROM plugins/base:linux-arm64
 
 LABEL maintainer="Bo-Yi Wu <appleboy.tw@gmail.com>" \
   org.label-schema.name="Drone Discord" \
