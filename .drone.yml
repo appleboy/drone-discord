@@ -89,6 +89,12 @@ steps:
     event:
     - tag
 
+- name: executable
+  pull: always
+  image: golang:1.11
+  commands:
+  - ./release/linux/amd64/drone-discord --help
+
 - name: dryrun
   pull: always
   image: plugins/docker:linux-amd64
@@ -163,6 +169,12 @@ steps:
     event:
     - tag
 
+- name: executable
+  pull: always
+  image: golang:1.11
+  commands:
+  - ./release/linux/arm64/drone-discord --help
+
 - name: dryrun
   pull: always
   image: plugins/docker:linux-arm64
@@ -236,6 +248,12 @@ steps:
   when:
     event:
     - tag
+
+- name: executable
+  pull: always
+  image: golang:1.11
+  commands:
+  - ./release/linux/arm/drone-discord --help
 
 - name: dryrun
   pull: always
