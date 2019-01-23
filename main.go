@@ -1,8 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
+	"time"
 
 	"github.com/joho/godotenv"
 	_ "github.com/joho/godotenv/autoload"
@@ -13,10 +15,11 @@ import (
 var Version string
 
 func main() {
+	year := fmt.Sprintf("%v", time.Now().Year())
 	app := cli.NewApp()
 	app.Name = "Drone Discord"
 	app.Usage = "Sending message to Discord channel using Webhook"
-	app.Copyright = "Copyright (c) 2017 Bo-Yi Wu"
+	app.Copyright = "Copyright (c) " + year + " Bo-Yi Wu"
 	app.Authors = []cli.Author{
 		{
 			Name:  "Bo-Yi Wu",
