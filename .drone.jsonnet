@@ -119,7 +119,9 @@ local PipelineBuild(name, os="linux", arch="amd64") = {
         "go build -v -ldflags \"-X main.build=${DRONE_BUILD_NUMBER}\" -a -o release/" + os + "/" + arch + "/" + name,
       ],
       when: {
-        event: [ "push", "pull_request" ],
+        event: {
+          exclude: [ "pull_request" ],
+        },
       },
     },
     {
@@ -150,6 +152,7 @@ local PipelineBuild(name, os="linux", arch="amd64") = {
       image: "plugins/docker:" + os + "-" + arch,
       pull: "always",
       settings: {
+        daemon_off: false,
         dry_run: true,
         tags: os + "-" + arch,
         dockerfile: "docker/Dockerfile." + os + "." + arch,
@@ -166,6 +169,7 @@ local PipelineBuild(name, os="linux", arch="amd64") = {
       image: "plugins/docker:" + os + "-" + arch,
       pull: "always",
       settings: {
+        daemon_off: "false",
         auto_tag: true,
         auto_tag_suffix: os + "-" + arch,
         dockerfile: "docker/Dockerfile." + os + "." + arch,
@@ -174,7 +178,9 @@ local PipelineBuild(name, os="linux", arch="amd64") = {
         password: { "from_secret": "docker_password" },
       },
       when: {
-        event: [ "push", "tag" ],
+        event: {
+          exclude: [ "pull_request" ],
+        },
       },
     },
   ],
@@ -182,7 +188,11 @@ local PipelineBuild(name, os="linux", arch="amd64") = {
     "testing",
   ],
   trigger: {
-    branch: [ "master" ],
+    ref: [
+      "refs/heads/master",
+      "refs/pulls/**",
+      "refs/tags/**",
+    ],
   },
 };
 

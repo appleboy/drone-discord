@@ -90,8 +90,8 @@ steps:
     GO111MODULE: on
   when:
     event:
-    - push
-    - pull_request
+      exclude:
+      - pull_request
 
 - name: build-tag
   pull: always
@@ -133,6 +133,7 @@ steps:
   settings:
     auto_tag: true
     auto_tag_suffix: linux-amd64
+    daemon_off: false
     dockerfile: docker/Dockerfile.linux.amd64
     password:
       from_secret: docker_password
@@ -141,12 +142,14 @@ steps:
       from_secret: docker_username
   when:
     event:
-    - push
-    - tag
+      exclude:
+      - pull_request
 
 trigger:
-  branch:
-  - master
+  ref:
+  - refs/heads/master
+  - "refs/pulls/**"
+  - "refs/tags/**"
 
 depends_on:
 - testing
@@ -170,8 +173,8 @@ steps:
     GO111MODULE: on
   when:
     event:
-    - push
-    - pull_request
+      exclude:
+      - pull_request
 
 - name: build-tag
   pull: always
@@ -213,6 +216,7 @@ steps:
   settings:
     auto_tag: true
     auto_tag_suffix: linux-arm64
+    daemon_off: false
     dockerfile: docker/Dockerfile.linux.arm64
     password:
       from_secret: docker_password
@@ -221,12 +225,14 @@ steps:
       from_secret: docker_username
   when:
     event:
-    - push
-    - tag
+      exclude:
+      - pull_request
 
 trigger:
-  branch:
-  - master
+  ref:
+  - refs/heads/master
+  - "refs/pulls/**"
+  - "refs/tags/**"
 
 depends_on:
 - testing
@@ -250,8 +256,8 @@ steps:
     GO111MODULE: on
   when:
     event:
-    - push
-    - pull_request
+      exclude:
+      - pull_request
 
 - name: build-tag
   pull: always
@@ -293,6 +299,7 @@ steps:
   settings:
     auto_tag: true
     auto_tag_suffix: linux-arm
+    daemon_off: false
     dockerfile: docker/Dockerfile.linux.arm
     password:
       from_secret: docker_password
@@ -301,12 +308,14 @@ steps:
       from_secret: docker_username
   when:
     event:
-    - push
-    - tag
+      exclude:
+      - pull_request
 
 trigger:
-  branch:
-  - master
+  ref:
+  - refs/heads/master
+  - "refs/pulls/**"
+  - "refs/tags/**"
 
 depends_on:
 - testing
