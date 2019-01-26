@@ -94,9 +94,6 @@ local PipelineTesting = {
       temp: {},
     },
   ],
-  trigger: {
-    branch: [ "master" ],
-  },
 };
 
 local PipelineBuild(name, os="linux", arch="amd64") = {

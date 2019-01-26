@@ -67,10 +67,6 @@ volumes:
 - name: gopath
   temp: {}
 
-trigger:
-  branch:
-  - master
-
 ---
 kind: pipeline
 name: linux-amd64
