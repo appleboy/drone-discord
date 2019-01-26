@@ -18,6 +18,12 @@ local PipelineTesting = {
       commands: [
         "make vet",
       ],
+      volumes: [
+        {
+          name: "gopath",
+          path: "/go",
+        },
+      ],
     },
     {
       name: "lint",
@@ -29,6 +35,12 @@ local PipelineTesting = {
       commands: [
         "make lint",
       ],
+      volumes: [
+        {
+          name: "gopath",
+          path: "/go",
+        },
+      ],
     },
     {
       name: "misspell",
@@ -39,6 +51,12 @@ local PipelineTesting = {
       },
       commands: [
         "make misspell-check",
+      ],
+      volumes: [
+        {
+          name: "gopath",
+          path: "/go",
+        },
       ],
     },
     {
@@ -54,6 +72,12 @@ local PipelineTesting = {
         "make test",
         "make coverage",
       ],
+      volumes: [
+        {
+          name: "gopath",
+          path: "/go",
+        },
+      ],
     },
     {
       name: "codecov",
@@ -62,6 +86,12 @@ local PipelineTesting = {
       settings: {
         token: { "from_secret": "codecov_token" },
       },
+    },
+  ],
+  volumes: [
+    {
+      name: "gopath",
+      temp: {},
     },
   ],
   trigger: {
