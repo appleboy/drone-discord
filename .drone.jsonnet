@@ -1,3 +1,5 @@
+local name = 'drone-discord';
+
 local PipelineTesting = {
   kind: "pipeline",
   name: "testing",
@@ -67,7 +69,7 @@ local PipelineTesting = {
   },
 };
 
-local PipelineBuild(os="linux", arch="amd64") = {
+local PipelineBuild(name, os="linux", arch="amd64") = {
   kind: "pipeline",
   name: os + "-" + arch,
   platform: {
@@ -84,7 +86,7 @@ local PipelineBuild(os="linux", arch="amd64") = {
         GO111MODULE: "on",
       },
       commands: [
-        "go build -v -ldflags \"-X main.build=${DRONE_BUILD_NUMBER}\" -a -o release/" + os + "/" + arch + "/drone-discord",
+        "go build -v -ldflags \"-X main.build=${DRONE_BUILD_NUMBER}\" -a -o release/" + os + "/" + arch + "/" + name,
       ],
       when: {
         event: [ "push", "pull_request" ],
@@ -99,7 +101,7 @@ local PipelineBuild(os="linux", arch="amd64") = {
         GO111MODULE: "on",
       },
       commands: [
-        "go build -v -ldflags \"-X main.version=${DRONE_TAG##v} -X main.build=${DRONE_BUILD_NUMBER}\" -a -o release/" + os + "/" + arch + "/drone-discord",
+        "go build -v -ldflags \"-X main.version=${DRONE_TAG##v} -X main.build=${DRONE_BUILD_NUMBER}\" -a -o release/" + os + "/" + arch + "/" + name,
       ],
       when: {
         event: [ "tag" ],
@@ -110,7 +112,7 @@ local PipelineBuild(os="linux", arch="amd64") = {
       image: "golang:1.11",
       pull: "always",
       commands: [
-        "./release/" + os + "/" + arch + "/drone-discord --help",
+        "./release/" + os + "/" + arch + "/" + name + " --help",
       ],
     },
     {
@@ -121,7 +123,7 @@ local PipelineBuild(os="linux", arch="amd64") = {
         dry_run: true,
         tags: os + "-" + arch,
         dockerfile: "docker/Dockerfile." + os + "." + arch,
-        repo: "appleboy/drone-discord",
+        repo: "appleboy/" + name,
         username: { "from_secret": "docker_username" },
         password: { "from_secret": "docker_password" },
       },
@@ -137,7 +139,7 @@ local PipelineBuild(os="linux", arch="amd64") = {
         auto_tag: true,
         auto_tag_suffix: os + "-" + arch,
         dockerfile: "docker/Dockerfile." + os + "." + arch,
-        repo: "appleboy/drone-discord",
+        repo: "appleboy/" + name,
         username: { "from_secret": "docker_username" },
         password: { "from_secret": "docker_password" },
       },
@@ -187,8 +189,8 @@ local PipelineNotifications = {
 
 [
   PipelineTesting,
-  PipelineBuild("linux", "amd64"),
-  PipelineBuild("linux", "arm64"),
-  PipelineBuild("linux", "arm"),
+  PipelineBuild(name, "linux", "amd64"),
+  PipelineBuild(name, "linux", "arm64"),
+  PipelineBuild(name, "linux", "arm"),
   PipelineNotifications,
 ]
