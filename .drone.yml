@@ -87,7 +87,7 @@ steps:
   when:
     event:
       exclude:
-      - pull_request
+      - tag
 
 - name: build-tag
   pull: always
@@ -170,7 +170,7 @@ steps:
   when:
     event:
       exclude:
-      - pull_request
+      - tag
 
 - name: build-tag
   pull: always
@@ -253,7 +253,7 @@ steps:
   when:
     event:
       exclude:
-      - pull_request
+      - tag
 
 - name: build-tag
   pull: always

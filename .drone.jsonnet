@@ -117,7 +117,7 @@ local PipelineBuild(name, os="linux", arch="amd64") = {
       ],
       when: {
         event: {
-          exclude: [ "pull_request" ],
+          exclude: [ "tag" ],
         },
       },
     },
