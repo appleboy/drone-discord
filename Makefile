@@ -9,7 +9,6 @@ DEPLOY_IMAGE := $(EXECUTABLE)
 
 TARGETS ?= linux darwin windows
 PACKAGES ?= $(shell $(GO) list ./...)
-GOFILES := $(shell find . -name "*.go" -type f)
 SOURCES ?= $(shell find . -name "*.go" -type f)
 TAGS ?=
 LDFLAGS ?= -X 'main.Version=$(VERSION)'
@@ -30,16 +29,10 @@ endif
 all: build
 
 fmt:
-	$(GOFMT) -w $(GOFILES)
+	$(GOFMT) -w $(SOURCES)
 
 vet:
 	$(GO) vet $(PACKAGES)
-
-errcheck:
-	@which errcheck > /dev/null; if [ $$? -ne 0 ]; then \
-		$(GO) get -u github.com/kisielk/errcheck; \
-	fi
-	errcheck $(PACKAGES)
 
 lint:
 	@hash revive > /dev/null 2>&1; if [ $$? -ne 0 ]; then \
@@ -58,18 +51,18 @@ misspell-check:
 	@hash misspell > /dev/null 2>&1; if [ $$? -ne 0 ]; then \
 		$(GO) get -u github.com/client9/misspell/cmd/misspell; \
 	fi
-	misspell -error $(GOFILES)
+	misspell -error $(SOURCES)
 
 .PHONY: misspell
 misspell:
 	@hash misspell > /dev/null 2>&1; if [ $$? -ne 0 ]; then \
 		$(GO) get -u github.com/client9/misspell/cmd/misspell; \
 	fi
-	misspell -w $(GOFILES)
+	misspell -w $(SOURCES)
 
 .PHONY: fmt-check
 fmt-check:
-	@diff=$$($(GOFMT) -d $(GOFILES)); \
+	@diff=$$($(GOFMT) -d $(SOURCES)); \
 	if [ -n "$$diff" ]; then \
 		echo "Please run 'make fmt' and commit the result:"; \
 		echo "$${diff}"; \
@@ -78,9 +71,6 @@ fmt-check:
 
 test: fmt-check
 	$(GO) test -v -cover -coverprofile coverage.txt ./... || exit 1
-
-html:
-	$(GO) tool cover -html=coverage.txt
 
 install: $(SOURCES)
 	$(GO) install -v -tags '$(TAGS)' -ldflags '$(EXTLDFLAGS)-s -w $(LDFLAGS)'
