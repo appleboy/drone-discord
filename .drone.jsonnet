@@ -193,12 +193,12 @@ local PipelineBuild(name, os="linux", arch="amd64") = {
   },
 };
 
-local PipelineNotifications = {
+local PipelineNotifications(os='linux', arch='amd64', depends_on=[]) = {
   kind: "pipeline",
   name: "notifications",
   platform: {
-    os: "linux",
-    arch: "amd64",
+    os: os,
+    arch: arch,
   },
   clone: {
     disable: true,
@@ -213,11 +213,7 @@ local PipelineNotifications = {
       },
     },
   ],
-  depends_on: [
-    "linux-amd64",
-    "linux-arm64",
-    "linux-arm",
-  ],
+  depends_on: depends_on,
   trigger: {
     branch: [ "master" ],
     event: [ "push", "tag" ],
@@ -229,5 +225,9 @@ local PipelineNotifications = {
   PipelineBuild(name, "linux", "amd64"),
   PipelineBuild(name, "linux", "arm64"),
   PipelineBuild(name, "linux", "arm"),
-  PipelineNotifications,
+  PipelineNotifications(depends_on=[
+    "linux-amd64",
+    "linux-arm64",
+    "linux-arm",
+  ]),
 ]
