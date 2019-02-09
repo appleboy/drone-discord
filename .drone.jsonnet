@@ -187,7 +187,7 @@ local PipelineBuild(name, os='linux', arch='amd64') = {
   trigger: {
     ref: [
       'refs/heads/master',
-      'refs/pulls/**',
+      'refs/pull/**',
       'refs/tags/**',
     ],
   },

@@ -144,7 +144,7 @@ steps:
 trigger:
   ref:
   - refs/heads/master
-  - "refs/pulls/**"
+  - "refs/pull/**"
   - "refs/tags/**"
 
 depends_on:
@@ -227,7 +227,7 @@ steps:
 trigger:
   ref:
   - refs/heads/master
-  - "refs/pulls/**"
+  - "refs/pull/**"
   - "refs/tags/**"
 
 depends_on:
@@ -310,7 +310,7 @@ steps:
 trigger:
   ref:
   - refs/heads/master
-  - "refs/pulls/**"
+  - "refs/pull/**"
   - "refs/tags/**"
 
 depends_on:
