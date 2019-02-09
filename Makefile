@@ -40,12 +40,6 @@ lint:
 	fi
 	revive -config .revive.toml ./... || exit 1
 
-unconvert:
-	@which unconvert > /dev/null; if [ $$? -ne 0 ]; then \
-		$(GO) get -u github.com/mdempsky/unconvert; \
-	fi
-	for PKG in $(PACKAGES); do unconvert -v $$PKG || exit 1; done;
-
 .PHONY: misspell-check
 misspell-check:
 	@hash misspell > /dev/null 2>&1; if [ $$? -ne 0 ]; then \
@@ -70,7 +64,7 @@ fmt-check:
 	fi;
 
 test: fmt-check
-	$(GO) test -v -cover -coverprofile coverage.txt ./... || exit 1
+	$(GO) test -v -cover -coverprofile coverage.txt $(PACKAGES) || exit 1
 
 install: $(SOURCES)
 	$(GO) install -v -tags '$(TAGS)' -ldflags '$(EXTLDFLAGS)-s -w $(LDFLAGS)'
