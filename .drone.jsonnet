@@ -193,6 +193,51 @@ local PipelineBuild(name, os='linux', arch='amd64') = {
   },
 };
 
+local PipelineRelease = {
+  kind: 'pipeline',
+  name: 'release-binary',
+  platform: {
+    os: 'linux',
+    arch: 'amd64',
+  },
+  steps: [
+    {
+      name: 'build-all-binary',
+      image: 'golang:1.11',
+      pull: 'always',
+      environment: {
+        GO111MODULE: 'on',
+      },
+      commands: [
+        'make release'
+      ],
+      when: {
+        event: [ 'tag' ],
+      },
+    },
+    {
+      name: 'deploy-all-binary',
+      image: 'plugins/github-release',
+      pull: 'always',
+      settings: {
+        files: [ 'dist/release/*' ],
+        api_key: { 'from_secret': 'github_release_api_key' },
+      },
+      when: {
+        event: [ 'tag' ],
+      },
+    },
+  ],
+  depends_on: [
+    'testing',
+  ],
+  trigger: {
+    ref: [
+      'refs/tags/**',
+    ],
+  },
+};
+
 local PipelineNotifications(os='linux', arch='amd64', depends_on=[]) = {
   kind: 'pipeline',
   name: 'notifications',
@@ -200,10 +245,18 @@ local PipelineNotifications(os='linux', arch='amd64', depends_on=[]) = {
     os: os,
     arch: arch,
   },
-  clone: {
-    disable: true,
-  },
   steps: [
+    {
+      name: 'manifest',
+      image: 'plugins/manifest',
+      pull: 'always',
+      settings: {
+        username: { from_secret: 'docker_username' },
+        password: { from_secret: 'docker_password' },
+        spec: 'docker/manifest.tmpl',
+        ignore_missing: true,
+      },
+    },
     {
       name: 'microbadger',
       image: 'plugins/webhook:1',
@@ -215,8 +268,10 @@ local PipelineNotifications(os='linux', arch='amd64', depends_on=[]) = {
   ],
   depends_on: depends_on,
   trigger: {
-    branch: [ 'master' ],
-    event: [ 'push', 'tag' ],
+    ref: [
+      'refs/heads/master',
+      'refs/tags/**',
+    ],
   },
 };
 
@@ -225,9 +280,11 @@ local PipelineNotifications(os='linux', arch='amd64', depends_on=[]) = {
   PipelineBuild(name, 'linux', 'amd64'),
   PipelineBuild(name, 'linux', 'arm64'),
   PipelineBuild(name, 'linux', 'arm'),
+  PipelineRelease,
   PipelineNotifications(depends_on=[
     'linux-amd64',
     'linux-arm64',
     'linux-arm',
+    'release-binary',
   ]),
 ]
