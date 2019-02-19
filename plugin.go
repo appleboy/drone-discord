@@ -21,6 +21,15 @@ const (
 )
 
 type (
+	// GitHub information.
+	GitHub struct {
+		Workflow  string
+		Workspace string
+		Action    string
+		EventName string
+		EventPath string
+	}
+
 	// Repo information
 	Repo struct {
 		Owner string
@@ -96,6 +105,7 @@ type (
 
 	// Plugin values.
 	Plugin struct {
+		GitHub  GitHub
 		Repo    Repo
 		Build   Build
 		Config  Config

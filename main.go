@@ -75,9 +75,14 @@ func main() {
 			EnvVar: "DRONE",
 		},
 		cli.StringFlag{
-			Name:   "repo.owner",
-			Usage:  "repository owner",
-			EnvVar: "DRONE_REPO_OWNER",
+			Name:   "repo",
+			Usage:  "repository owner and repository name",
+			EnvVar: "DRONE_REPO,GITHUB_REPOSITORY",
+		},
+		cli.StringFlag{
+			Name:   "repo.namespace",
+			Usage:  "repository namespace",
+			EnvVar: "DRONE_REPO_OWNER,DRONE_REPO_NAMESPACE,GITHUB_ACTOR",
 		},
 		cli.StringFlag{
 			Name:   "repo.name",
@@ -87,12 +92,12 @@ func main() {
 		cli.StringFlag{
 			Name:   "commit.sha",
 			Usage:  "git commit sha",
-			EnvVar: "DRONE_COMMIT_SHA",
+			EnvVar: "DRONE_COMMIT_SHA,GITHUB_SHA",
 		},
 		cli.StringFlag{
-			Name:   "commit.refspec",
-			Usage:  "git commit ref spec",
-			EnvVar: "DRONE_COMMIT_REF",
+			Name:   "commit.ref",
+			Usage:  "git commit ref",
+			EnvVar: "DRONE_COMMIT_REF,GITHUB_REF",
 		},
 		cli.StringFlag{
 			Name:   "commit.branch",
@@ -161,6 +166,36 @@ func main() {
 			Name:  "env-file",
 			Usage: "source env file",
 		},
+		cli.BoolFlag{
+			Name:   "github",
+			Usage:  "Boolean value, indicates the runtime environment is GitHub Action.",
+			EnvVar: "PLUGIN_GITHUB,GITHUB",
+		},
+		cli.StringFlag{
+			Name:   "github.workflow",
+			Usage:  "The name of the workflow.",
+			EnvVar: "GITHUB_WORKFLOW",
+		},
+		cli.StringFlag{
+			Name:   "github.action",
+			Usage:  "The name of the action.",
+			EnvVar: "GITHUB_ACTION",
+		},
+		cli.StringFlag{
+			Name:   "github.event.name",
+			Usage:  "The webhook name of the event that triggered the workflow.",
+			EnvVar: "GITHUB_EVENT_NAME",
+		},
+		cli.StringFlag{
+			Name:   "github.event.path",
+			Usage:  "The path to a file that contains the payload of the event that triggered the workflow. Value: /github/workflow/event.json.",
+			EnvVar: "GITHUB_EVENT_PATH",
+		},
+		cli.StringFlag{
+			Name:   "github.workspace",
+			Usage:  "The GitHub workspace path. Value: /github/workspace.",
+			EnvVar: "GITHUB_WORKSPACE",
+		},
 	}
 
 	if err := app.Run(os.Args); err != nil {
@@ -174,6 +209,13 @@ func run(c *cli.Context) error {
 	}
 
 	plugin := Plugin{
+		GitHub: GitHub{
+			Workflow:  c.String("github.workflow"),
+			Workspace: c.String("github.workspace"),
+			Action:    c.String("github.action"),
+			EventName: c.String("github.event.name"),
+			EventPath: c.String("github.event.path"),
+		},
 		Repo: Repo{
 			Owner: c.String("repo.owner"),
 			Name:  c.String("repo.name"),
