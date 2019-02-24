@@ -215,6 +215,13 @@ func (p *Plugin) DroneTemplate() EmbedObject {
 	}
 }
 
+// Clear reset to default
+func (p *Plugin) Clear() {
+	// clear content field.
+	p.Payload.Content = ""
+	p.Payload.Embeds = []EmbedObject{}
+}
+
 // Color code of the embed
 func (p *Plugin) Color() int {
 	if p.Config.Color != "" {
