@@ -31,8 +31,9 @@ type (
 
 	// Repo information
 	Repo struct {
-		Owner string
-		Name  string
+		FullName  string
+		Namespace string
+		Name      string
 	}
 
 	// Build information
@@ -60,6 +61,7 @@ type (
 		Color        string
 		Message      []string
 		Drone        bool
+		GitHub       bool
 	}
 
 	// EmbedFooterObject for Embed Footer Structure.
@@ -119,7 +121,7 @@ func (p *Plugin) Exec() error {
 	}
 
 	if p.Config.Drone && len(p.Config.Message) == 0 {
-		object := p.DroneTemplate()
+		object := p.Template()
 		p.Payload.Embeds = []EmbedObject{object}
 		err := p.Send()
 		if err != nil {
@@ -181,8 +183,26 @@ func (p *Plugin) DefaultTemplate(title string) EmbedObject {
 	}
 }
 
-// DroneTemplate is plugin default template for Drone CI.
-func (p *Plugin) DroneTemplate() EmbedObject {
+// Template is plugin default template for Drone CI or GitHub Action.
+func (p *Plugin) Template() EmbedObject {
+	if p.Config.GitHub {
+		message := fmt.Sprintf("%s/%s triggered by %s (%s)",
+			p.Repo.FullName,
+			p.GitHub.Workflow,
+			p.Repo.Namespace,
+			p.GitHub.EventName,
+		)
+
+		return EmbedObject{
+			Title: message,
+			Color: p.Color(),
+			Footer: EmbedFooterObject{
+				Text:    DroneDesc,
+				IconURL: DroneIconURL,
+			},
+		}
+	}
+
 	description := ""
 	switch p.Build.Event {
 	case "push":

@@ -217,8 +217,9 @@ func run(c *cli.Context) error {
 			EventPath: c.String("github.event.path"),
 		},
 		Repo: Repo{
-			Owner: c.String("repo.owner"),
-			Name:  c.String("repo.name"),
+			FullName:  c.String("repo"),
+			Namespace: c.String("repo.namespace"),
+			Name:      c.String("repo.name"),
 		},
 		Build: Build{
 			Tag:      c.String("build.tag"),
@@ -242,6 +243,7 @@ func run(c *cli.Context) error {
 			Message:      c.StringSlice("message"),
 			Color:        c.String("color"),
 			Drone:        c.Bool("drone"),
+			GitHub:       c.Bool("github"),
 		},
 		Payload: Payload{
 			Wait:      c.Bool("wait"),

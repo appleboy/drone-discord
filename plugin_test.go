@@ -16,11 +16,11 @@ func TestMissingConfig(t *testing.T) {
 	assert.NotNil(t, err)
 }
 
-func TestDroneTemplate(t *testing.T) {
+func TestTemplate(t *testing.T) {
 	plugin := Plugin{
 		Repo: Repo{
-			Name:  "go-hello",
-			Owner: "appleboy",
+			Name:      "go-hello",
+			Namespace: "appleboy",
 		},
 		Build: Build{
 			Number:  101,
