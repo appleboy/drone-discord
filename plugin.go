@@ -120,7 +120,7 @@ func (p *Plugin) Exec() error {
 		return errors.New("missing discord config")
 	}
 
-	if p.Config.Drone && len(p.Config.Message) == 0 {
+	if len(p.Config.Message) == 0 {
 		object := p.Template()
 		p.Payload.Embeds = []EmbedObject{object}
 		err := p.Send()
