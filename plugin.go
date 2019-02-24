@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -115,9 +114,7 @@ type (
 
 // Exec executes the plugin.
 func (p *Plugin) Exec() error {
-	if len(p.Config.WebhookID) == 0 || len(p.Config.WebhookToken) == 0 {
-		log.Println("missing discord config")
-
+	if p.Config.WebhookID == "" || p.Config.WebhookToken == "" {
 		return errors.New("missing discord config")
 	}
 
@@ -229,13 +226,13 @@ func (p *Plugin) Color() int {
 
 	switch p.Build.Status {
 	case "success":
-		// #1ac600 green
-		return 1754624
+		// green
+		return 0x1ac600
 	case "failure", "error", "killed":
-		// #ff3232 red
-		return 16724530
+		// red
+		return 0xff3232
 	default:
-		// #ffd930 yellow
-		return 16767280
+		// yellow
+		return 0xffd930
 	}
 }
