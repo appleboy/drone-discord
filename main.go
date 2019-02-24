@@ -42,7 +42,7 @@ func main() {
 		cli.StringSliceFlag{
 			Name:   "message",
 			Usage:  "the message contents (up to 2000 characters)",
-			EnvVar: "PLUGIN_MESSAGE,MESSAGE",
+			EnvVar: "PLUGIN_MESSAGE,DISCORD_MESSAGE,MESSAGE",
 		},
 		cli.StringFlag{
 			Name:   "color",
