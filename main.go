@@ -44,6 +44,11 @@ func main() {
 			Usage:  "the message contents (up to 2000 characters)",
 			EnvVar: "PLUGIN_MESSAGE,DISCORD_MESSAGE,MESSAGE",
 		},
+		cli.StringSliceFlag{
+			Name:   "file",
+			Usage:  "the contents of the file being sent",
+			EnvVar: "PLUGIN_FILE,DISCORD_FILE,FILE",
+		},
 		cli.StringFlag{
 			Name:   "color",
 			Usage:  "color code of the embed",
@@ -241,6 +246,7 @@ func run(c *cli.Context) error {
 			WebhookID:    c.String("webhook-id"),
 			WebhookToken: c.String("webhook-token"),
 			Message:      c.StringSlice("message"),
+			File:         c.StringSlice("file"),
 			Color:        c.String("color"),
 			Drone:        c.Bool("drone"),
 			GitHub:       c.Bool("github"),

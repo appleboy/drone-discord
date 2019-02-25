@@ -5,7 +5,10 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io/ioutil"
+	"mime/multipart"
 	"net/http"
+	"os"
 	"strconv"
 	"strings"
 
@@ -60,6 +63,7 @@ type (
 		WebhookToken string
 		Color        string
 		Message      []string
+		File         []string
 		Drone        bool
 		GitHub       bool
 	}
@@ -114,6 +118,46 @@ type (
 	}
 )
 
+// Creates a new file upload http request with optional extra params
+func newfileUploadRequest(uri string, params map[string]string, paramName, path string) (*http.Request, error) {
+	file, err := os.Open(path)
+	if err != nil {
+		return nil, err
+	}
+	fileContents, err := ioutil.ReadAll(file)
+	if err != nil {
+		return nil, err
+	}
+	fi, err := file.Stat()
+	if err != nil {
+		return nil, err
+	}
+	file.Close()
+
+	body := new(bytes.Buffer)
+	writer := multipart.NewWriter(body)
+	part, err := writer.CreateFormFile(paramName, fi.Name())
+	if err != nil {
+		return nil, err
+	}
+	if _, err := part.Write(fileContents); err != nil {
+		return nil, err
+	}
+
+	for key, val := range params {
+		_ = writer.WriteField(key, val)
+	}
+	err = writer.Close()
+	if err != nil {
+		return nil, err
+	}
+
+	request, err := http.NewRequest("POST", uri, body)
+	request.Header.Add("Content-Type", writer.FormDataContentType())
+
+	return request, err
+}
+
 // Exec executes the plugin.
 func (p *Plugin) Exec() error {
 	if p.Config.WebhookID == "" || p.Config.WebhookToken == "" {
@@ -123,7 +167,7 @@ func (p *Plugin) Exec() error {
 	if len(p.Config.Message) == 0 {
 		object := p.Template()
 		p.Payload.Embeds = []EmbedObject{object}
-		err := p.Send()
+		err := p.SendMessage()
 		if err != nil {
 			return err
 		}
@@ -141,7 +185,7 @@ func (p *Plugin) Exec() error {
 				p.Payload.Embeds = append(p.Payload.Embeds, object)
 			} else {
 				p.Payload.Content = txt
-				err = p.Send()
+				err = p.SendMessage()
 				if err != nil {
 					return err
 				}
@@ -149,18 +193,60 @@ func (p *Plugin) Exec() error {
 		}
 
 		if len(p.Payload.Embeds) > 0 {
-			err := p.Send()
+			err := p.SendMessage()
 			if err != nil {
 				return err
 			}
 		}
 	}
 
+	for _, f := range p.Config.File {
+		err := p.SendFile(f)
+		if err != nil {
+			return err
+		}
+	}
+
 	return nil
 }
 
-// Send discord message.
-func (p *Plugin) Send() error {
+// SendFile upload file to discord
+func (p *Plugin) SendFile(file string) error {
+	webhookURL := fmt.Sprintf("https://discordapp.com/api/webhooks/%s/%s", p.Config.WebhookID, p.Config.WebhookToken)
+	extraParams := map[string]string{}
+
+	if p.Payload.Username != "" {
+		extraParams["username"] = p.Payload.Username
+	}
+
+	if p.Payload.AvatarURL != "" {
+		extraParams["avatar_url"] = p.Payload.AvatarURL
+	}
+
+	if p.Payload.TTS {
+		extraParams["tts"] = "true"
+	}
+
+	request, err := newfileUploadRequest(
+		webhookURL,
+		extraParams,
+		"file",
+		file,
+	)
+	if err != nil {
+		return err
+	}
+	client := &http.Client{}
+	_, err = client.Do(request)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// SendMessage to send discord message.
+func (p *Plugin) SendMessage() error {
 	webhookURL := fmt.Sprintf("https://discordapp.com/api/webhooks/%s/%s", p.Config.WebhookID, p.Config.WebhookToken)
 	b := new(bytes.Buffer)
 	if err := json.NewEncoder(b).Encode(p.Payload); err != nil {
