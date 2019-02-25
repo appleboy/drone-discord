@@ -208,6 +208,7 @@ func (p *Plugin) Exec() error {
 	return nil
 }
 
+// SendFile upload file to discord
 func (p *Plugin) SendFile(file string) error {
 	webhookURL := fmt.Sprintf("https://discordapp.com/api/webhooks/%s/%s", p.Config.WebhookID, p.Config.WebhookToken)
 	extraParams := map[string]string{}
@@ -242,7 +243,7 @@ func (p *Plugin) SendFile(file string) error {
 	return nil
 }
 
-// Send discord message.
+// SendMessage to send discord message.
 func (p *Plugin) SendMessage() error {
 	webhookURL := fmt.Sprintf("https://discordapp.com/api/webhooks/%s/%s", p.Config.WebhookID, p.Config.WebhookToken)
 	b := new(bytes.Buffer)
