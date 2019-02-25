@@ -140,7 +140,9 @@ func newfileUploadRequest(uri string, params map[string]string, paramName, path 
 	if err != nil {
 		return nil, err
 	}
-	part.Write(fileContents)
+	if _, err := part.Write(fileContents); err != nil {
+		return nil, err
+	}
 
 	for key, val := range params {
 		_ = writer.WriteField(key, val)
