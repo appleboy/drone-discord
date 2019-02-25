@@ -5,10 +5,11 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"mime/multipart"
 	"net/http"
 	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 
@@ -124,25 +125,15 @@ func newfileUploadRequest(uri string, params map[string]string, paramName, path 
 	if err != nil {
 		return nil, err
 	}
-	fileContents, err := ioutil.ReadAll(file)
-	if err != nil {
-		return nil, err
-	}
-	fi, err := file.Stat()
-	if err != nil {
-		return nil, err
-	}
-	file.Close()
+	defer file.Close()
 
-	body := new(bytes.Buffer)
+	body := &bytes.Buffer{}
 	writer := multipart.NewWriter(body)
-	part, err := writer.CreateFormFile(paramName, fi.Name())
+	part, err := writer.CreateFormFile(paramName, filepath.Base(path))
 	if err != nil {
 		return nil, err
 	}
-	if _, err := part.Write(fileContents); err != nil {
-		return nil, err
-	}
+	_, err = io.Copy(part, file)
 
 	for key, val := range params {
 		_ = writer.WriteField(key, val)
@@ -152,10 +143,9 @@ func newfileUploadRequest(uri string, params map[string]string, paramName, path 
 		return nil, err
 	}
 
-	request, err := http.NewRequest("POST", uri, body)
-	request.Header.Add("Content-Type", writer.FormDataContentType())
-
-	return request, err
+	req, err := http.NewRequest("POST", uri, body)
+	req.Header.Set("Content-Type", writer.FormDataContentType())
+	return req, err
 }
 
 // Exec executes the plugin.
