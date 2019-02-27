@@ -120,6 +120,7 @@ type (
 )
 
 // Creates a new file upload http request with optional extra params
+// https://matt.aimonetti.net/posts/2013/07/01/golang-multipart-file-upload-example/
 func newfileUploadRequest(uri string, params map[string]string, paramName, path string) (*http.Request, error) {
 	file, err := os.Open(path)
 	if err != nil {
