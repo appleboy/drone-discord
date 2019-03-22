@@ -130,10 +130,10 @@ steps:
     daemon_off: false
     dockerfile: docker/Dockerfile.linux.amd64
     password:
-      from_secret: docker_password
+      from_secret: password
     repo: appleboy/drone-discord
     username:
-      from_secret: docker_username
+      from_secret: username
   when:
     event:
       exclude:
@@ -211,10 +211,10 @@ steps:
     daemon_off: false
     dockerfile: docker/Dockerfile.linux.arm64
     password:
-      from_secret: docker_password
+      from_secret: password
     repo: appleboy/drone-discord
     username:
-      from_secret: docker_username
+      from_secret: username
   when:
     event:
       exclude:
@@ -292,10 +292,10 @@ steps:
     daemon_off: false
     dockerfile: docker/Dockerfile.linux.arm
     password:
-      from_secret: docker_password
+      from_secret: password
     repo: appleboy/drone-discord
     username:
-      from_secret: docker_username
+      from_secret: username
   when:
     event:
       exclude:
@@ -364,10 +364,10 @@ steps:
   settings:
     ignore_missing: true
     password:
-      from_secret: docker_password
+      from_secret: password
     spec: docker/manifest.tmpl
     username:
-      from_secret: docker_username
+      from_secret: username
 
 - name: microbadger
   pull: always
@@ -386,5 +386,16 @@ depends_on:
 - linux-arm64
 - linux-arm
 - release-binary
+
+---
+kind: secret
+
+external_data:
+  host:
+    path: drone/data/docker
+    name: username
+  username:
+    path: drone/data/docker
+    name: password
 
 ...
