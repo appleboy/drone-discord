@@ -1,6 +1,6 @@
 module github.com/appleboy/drone-discord
 
-go 1.12
+go 1.11
 
 require (
 	github.com/appleboy/drone-facebook v1.4.0
