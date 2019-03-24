@@ -5,6 +5,6 @@ LABEL maintainer="Bo-Yi Wu <appleboy.tw@gmail.com>" \
   org.label-schema.vendor="Bo-Yi Wu" \
   org.label-schema.schema-version="1.0"
 
-COPY release/drone-discord.exe /drone-discord.exe
+COPY release/drone-discord.exe C:/bin/drone-discord.exe
 
-ENTRYPOINT [ "\\drone-discord.exe" ]
+ENTRYPOINT [ "C:\\bin\\drone-discord.exe" ]
