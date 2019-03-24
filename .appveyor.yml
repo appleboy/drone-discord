@@ -11,8 +11,6 @@ environment:
   docker_password:
     secure: Yo9FJJqihaNz5q8T4Jz8tQ==
 
-stack: go 1.12
-
 branches:
   only:
     - master
