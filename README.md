@@ -6,6 +6,7 @@ Drone plugin for sending message to Discord channel using Webhook.
 
 [![GoDoc](https://godoc.org/github.com/appleboy/drone-discord?status.svg)](https://godoc.org/github.com/appleboy/drone-discord)
 [![Build Status](https://cloud.drone.io/api/badges/appleboy/drone-discord/status.svg)](https://cloud.drone.io/appleboy/drone-discord)
+[![Build status](https://ci.appveyor.com/api/projects/status/xj24ye9lu68a9sqm?svg=true)](https://ci.appveyor.com/project/appleboy/drone-discord-bne7m)
 [![codecov](https://codecov.io/gh/appleboy/drone-discord/branch/master/graph/badge.svg)](https://codecov.io/gh/appleboy/drone-discord)
 [![Go Report Card](https://goreportcard.com/badge/github.com/appleboy/drone-discord)](https://goreportcard.com/report/github.com/appleboy/drone-discord)
 [![Docker Pulls](https://img.shields.io/docker/pulls/appleboy/drone-discord.svg)](https://hub.docker.com/r/appleboy/drone-discord/)
