@@ -13,9 +13,9 @@ Webhooks are a low-effort way to post messages to channels in Discord. They do n
 The discord plugin posts build status messages to discord channel. The below pipeline configuration demonstrates simple usage:
 
 ```yaml
-pipeline:
-  discord:
-    image: appleboy/drone-discord
+- name: send notification
+  image: appleboy/drone-discored
+  settings:
     webhook_id: xxxxxxxxxx
     webhook_token: xxxxxxxxxx
 ```
@@ -23,9 +23,8 @@ pipeline:
 Example configuration with TTS (text-to-speech) message:
 
 ```diff
-pipeline:
-  discord:
-    image: appleboy/drone-discord
+  image: appleboy/drone-discored
+  settings:
     webhook_id: xxxxxxxxxx
     webhook_token: xxxxxxxxxx
 +   tts: true
@@ -35,9 +34,8 @@ pipeline:
 Example configuration with override the default username of the webhook:
 
 ```diff
-pipeline:
-  discord:
-    image: appleboy/drone-discord
+  image: appleboy/drone-discored
+  settings:
     webhook_id: xxxxxxxxxx
     webhook_token: xxxxxxxxxx
 +   username: appleboy
@@ -47,9 +45,8 @@ pipeline:
 Example configuration with override the default avatar of the webhook:
 
 ```diff
-pipeline:
-  discord:
-    image: appleboy/drone-discord
+  image: appleboy/drone-discored
+  settings:
     webhook_id: xxxxxxxxxx
     webhook_token: xxxxxxxxxx
 +   avatar_url: http://exampple.com/appleboy.png
@@ -59,9 +56,8 @@ pipeline:
 Example configuration with a custom message template:
 
 ```diff
-pipeline:
-  discord:
-    image: appleboy/drone-discord
+  image: appleboy/drone-discored
+  settings:
     webhook_id: xxxxxxxxxx
     webhook_token: xxxxxxxxxx
 +   message: >
@@ -75,16 +71,15 @@ pipeline:
 Example configuration using credentials from secrets:
 
 ```diff
-pipeline:
-  discord:
-    image: appleboy/drone-discord
+  image: appleboy/drone-discored
+  settings:
 -   webhook_id: xxxxxxxxxx
 -   webhook_token: xxxxxxxxxx
 +   secrets: [ discord_webhook_id, discord_webhook_token ]
     message: "Testing from drone image"
 ```
 
-# Secret Reference
+## Secret Reference
 
 discord_webhook_id
 : discord webhook id
@@ -92,7 +87,7 @@ discord_webhook_id
 discord_webhook_token
 : discord webhook token
 
-# Parameter Reference
+## Parameter Reference
 
 webhook_id
 : webhook id
@@ -112,7 +107,7 @@ tts
 message
 : the message contents (up to 2000 characters)
 
-# Template Reference
+## Template Reference
 
 repo.owner
 : repository owner
@@ -156,7 +151,7 @@ build.started
 build.finished
 : unix timestamp for build finished
 
-# Template Function Reference
+## Template Function Reference
 
 uppercasefirst
 : converts the first letter of a string to uppercase
