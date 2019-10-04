@@ -1,6 +1,6 @@
-<img src="images/discord-logo.png">
-
 # drone-[discord](https://discordapp.com)
+
+![logo](images/discord-logo.png)
 
 Drone plugin for sending message to Discord channel using Webhook.
 
@@ -10,7 +10,7 @@ Drone plugin for sending message to Discord channel using Webhook.
 [![codecov](https://codecov.io/gh/appleboy/drone-discord/branch/master/graph/badge.svg)](https://codecov.io/gh/appleboy/drone-discord)
 [![Go Report Card](https://goreportcard.com/badge/github.com/appleboy/drone-discord)](https://goreportcard.com/report/github.com/appleboy/drone-discord)
 [![Docker Pulls](https://img.shields.io/docker/pulls/appleboy/drone-discord.svg)](https://hub.docker.com/r/appleboy/drone-discord/)
-[![](https://images.microbadger.com/badges/image/appleboy/drone-discord:linux-amd64.svg)](https://microbadger.com/images/appleboy/drone-discord:linux-amd64 "Get your own image badge on microbadger.com")
+[![microbadger](https://images.microbadger.com/badges/image/appleboy/drone-discord:linux-amd64.svg)](https://microbadger.com/images/appleboy/drone-discord:linux-amd64 "Get your own image badge on microbadger.com")
 
 Webhooks are a low-effort way to post messages to channels in Discord. They do not require a bot user or authentication to use. See more [api document information](https://discordapp.com/developers/docs/resources/webhook). For the usage information and a listing of the available options please take a look at [the docs](http://plugins.drone.io/appleboy/drone-discord/).
 
@@ -19,7 +19,7 @@ Sending discord message using a binary, docker or [Drone CI](http://docs.drone.i
 ## Features
 
 * [x] Send Multiple Messages
-* [x] Send Multiple Files 
+* [x] Send Multiple Files
 
 ## Build or Download a binary
 
@@ -31,51 +31,28 @@ The pre-compiled binaries can be downloaded from [release page](https://github.c
 
 With `Go` installed
 
+```sh
+go get -u -v github.com/appleboy/drone-discord
 ```
-$ go get -u -v github.com/appleboy/drone-discord
-``` 
 
 or build the binary with the following command:
 
-```
-$ export GOOS=linux
-$ export GOARCH=amd64
-$ export CGO_ENABLED=0
-$ export GO111MODULE=on
+```sh
+export GOOS=linux
+export GOARCH=amd64
+export CGO_ENABLED=0
+export GO111MODULE=on
 
-$ go test -cover ./...
+go test -cover ./...
 
-$ go build -v -a -tags netgo -o release/linux/amd64/drone-discord .
-```
-
-## Docker
-
-Build the docker image with the following commands:
-
-```
-$ make docker
-```
-
-Please note incorrectly building the image for the correct x64 linux and with
-CGO disabled will result in an error when running the Docker image:
-
-```
-docker: Error response from daemon: Container command
-'/bin/drone-discord' not found or does not exist..
+go build -v -a -tags netgo -o release/linux/amd64/drone-discord
 ```
 
 ## Usage
 
 There are three ways to send notification.
 
-* [usage from binary](#usage-from-binary)
-* [usage from docker](#usage-from-docker)
-* [usage from drone ci](#usage-from-drone-ci)
-
-<a name="usage-from-binary"></a>
 ### Usage from binary
-
-#### Send Notification
 
 ```bash
 drone-discord \
@@ -84,10 +61,7 @@ drone-discord \
   --message "Test Message"
 ```
 
-<a name="usage-from-docker"></a>
 ### Usage from docker
-
-#### Send Notification
 
 ```bash
 docker run --rm \
@@ -101,14 +75,13 @@ docker run --rm \
   appleboy/drone-discord
 ```
 
-<a name="usage-from-drone-ci"></a>
 ### Usage from drone ci
 
 #### Send Notification
 
 Execute from the working directory:
 
-```bash
+```sh
 docker run --rm \
   -e WEBHOOK_ID=xxxxxxx \
   -e WEBHOOK_TOKEN=xxxxxxx \
@@ -140,6 +113,6 @@ You can get more [information](DOCS.md) about how to use this plugin in drone.
 
 Test the package with the following command:
 
-```
-$ make test
+```sh
+make test
 ```
