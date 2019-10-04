@@ -32,47 +32,47 @@ func main() {
 		cli.StringFlag{
 			Name:   "webhook-id",
 			Usage:  "discord webhook id",
-			EnvVar: "PLUGIN_WEBHOOK_ID,WEBHOOK_ID,DISCORD_WEBHOOK_ID",
+			EnvVar: "PLUGIN_WEBHOOK_ID,WEBHOOK_ID,DISCORD_WEBHOOK_ID,INPUT_WEBHOOK_ID",
 		},
 		cli.StringFlag{
 			Name:   "webhook-token",
 			Usage:  "discord webhook token",
-			EnvVar: "PLUGIN_WEBHOOK_TOKEN,WEBHOOK_TOKEN,DISCORD_WEBHOOK_TOKEN",
+			EnvVar: "PLUGIN_WEBHOOK_TOKEN,WEBHOOK_TOKEN,DISCORD_WEBHOOK_TOKEN,INPUT_WEBHOOK_TOKEN",
 		},
 		cli.StringSliceFlag{
 			Name:   "message",
 			Usage:  "the message contents (up to 2000 characters)",
-			EnvVar: "PLUGIN_MESSAGE,DISCORD_MESSAGE,MESSAGE",
+			EnvVar: "PLUGIN_MESSAGE,DISCORD_MESSAGE,MESSAGE,INPUT_MESSAGE",
 		},
 		cli.StringSliceFlag{
 			Name:   "file",
 			Usage:  "the contents of the file being sent",
-			EnvVar: "PLUGIN_FILE,DISCORD_FILE,FILE",
+			EnvVar: "PLUGIN_FILE,DISCORD_FILE,FILE,INPUT_FILE",
 		},
 		cli.StringFlag{
 			Name:   "color",
 			Usage:  "color code of the embed",
-			EnvVar: "PLUGIN_COLOR,COLOR",
+			EnvVar: "PLUGIN_COLOR,COLOR,INPUT_COLOR",
 		},
 		cli.BoolFlag{
 			Name:   "wait",
 			Usage:  "waits for server confirmation of message send before response, and returns the created message body",
-			EnvVar: "PLUGIN_WAIT,WAIT",
+			EnvVar: "PLUGIN_WAIT,WAIT,INPUT_WAIT",
 		},
 		cli.BoolFlag{
 			Name:   "tts",
 			Usage:  "true if this is a TTS message",
-			EnvVar: "PLUGIN_TTS,TTS",
+			EnvVar: "PLUGIN_TTS,TTS,INPUT_TTS",
 		},
 		cli.StringFlag{
 			Name:   "username",
 			Usage:  "override the default username of the webhook",
-			EnvVar: "PLUGIN_USERNAME,USERNAME",
+			EnvVar: "PLUGIN_USERNAME,USERNAME,INPUT_USERNAME",
 		},
 		cli.StringFlag{
 			Name:   "avatar-url",
 			Usage:  "override the default avatar of the webhook",
-			EnvVar: "PLUGIN_AVATAR_URL,AVATAR_URL",
+			EnvVar: "PLUGIN_AVATAR_URL,AVATAR_URL,INPUT_AVATAR_URL",
 		},
 		cli.BoolFlag{
 			Name:   "drone",
