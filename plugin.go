@@ -13,7 +13,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/appleboy/drone-facebook/template"
+	"github.com/drone/drone-template-lib/template"
 )
 
 const (
@@ -119,6 +119,10 @@ type (
 	}
 )
 
+func templateMessage(t string, plugin Plugin) (string, error) {
+	return template.RenderTrim(t, plugin)
+}
+
 // Creates a new file upload http request with optional extra params
 // https://matt.aimonetti.net/posts/2013/07/01/golang-multipart-file-upload-example/
 func newfileUploadRequest(uri string, params map[string]string, paramName, path string) (*http.Request, error) {
@@ -166,7 +170,7 @@ func (p *Plugin) Exec() error {
 
 	if len(p.Config.Message) > 0 {
 		for _, m := range p.Config.Message {
-			txt, err := template.RenderTrim(m, p)
+			txt, err := templateMessage(m, *p)
 			if err != nil {
 				return err
 			}
