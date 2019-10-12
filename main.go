@@ -170,12 +170,12 @@ func main() {
 		cli.Int64Flag{
 			Name:   "job.started",
 			Usage:  "job started",
-			EnvVar: "DRONE_JOB_STARTED",
+			EnvVar: "DRONE_BUILD_STARTED",
 		},
 		cli.Int64Flag{
 			Name:   "job.finished",
 			Usage:  "job finished",
-			EnvVar: "DRONE_JOB_FINISHED",
+			EnvVar: "DRONE_BUILD_FINISHED",
 		},
 		cli.StringFlag{
 			Name:  "env-file",
