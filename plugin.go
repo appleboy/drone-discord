@@ -203,6 +203,8 @@ func (p *Plugin) Exec() error {
 		}
 	}
 
+	fmt.Println(p.Config.File)
+	fmt.Println(len(p.Config.File))
 	for _, f := range p.Config.File {
 		err := p.SendFile(f)
 		if err != nil {
