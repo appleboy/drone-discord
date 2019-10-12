@@ -343,6 +343,20 @@ platform:
   arch: amd64
 
 steps:
+- name: test
+  pull: always
+  image: appleboy/drone-discord
+  settings:
+    message: "{{#success build.status}}
+          build {{build.number}} deployed in {{since build.started}}.
+        {{ else }}
+          build {{build.number}} failed in {{since build.started}}. See {{build.link}}.
+        {{/success}}"
+    webhook_id:
+      from_secret: webhook_id
+    webhook_token:
+      from_secret: webhook_token
+
 - name: discord
   pull: always
   image: appleboy/drone-discord
