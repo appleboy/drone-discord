@@ -22,16 +22,17 @@ func TestTemplate(t *testing.T) {
 			Name:      "go-hello",
 			Namespace: "appleboy",
 		},
-		Build: Build{
-			Number:  101,
-			Status:  "success",
-			Link:    "https://github.com/appleboy/go-hello",
+		Commit: Commit{
 			Author:  "appleboy",
 			Branch:  "master",
-			Event:   "tag",
 			Message: "update by drone discord plugin. \r\n update by drone discord plugin.",
-			Commit:  "e7c4f0a63ceeb42a39ac7806f7b51f3f0d204fd2",
 			Avatar:  "https://avatars0.githubusercontent.com/u/21979?v=3&s=100",
+		},
+		Build: Build{
+			Number: 101,
+			Status: "success",
+			Link:   "https://github.com/appleboy/go-hello",
+			Event:  "tag",
 		},
 
 		Config: Config{
@@ -69,7 +70,7 @@ func TestTemplate(t *testing.T) {
 
 	// send success embed message
 	plugin.Build.Status = "failure"
-	plugin.Build.Message = "send failure embed message"
+	plugin.Commit.Message = "send failure embed message"
 	plugin.Clear()
 	err = plugin.Exec()
 	assert.Nil(t, err)
@@ -77,14 +78,14 @@ func TestTemplate(t *testing.T) {
 
 	// send default embed message
 	plugin.Build.Status = "test"
-	plugin.Build.Message = "send default embed message"
+	plugin.Commit.Message = "send default embed message"
 	plugin.Clear()
 	err = plugin.Exec()
 	assert.Nil(t, err)
 
 	//change color for embed message
 	plugin.Config.Color = "#4842f4"
-	plugin.Build.Message = "Change embed color to #4842f4"
+	plugin.Commit.Message = "Change embed color to #4842f4"
 	plugin.Clear()
 	err = plugin.Exec()
 	assert.Nil(t, err)
