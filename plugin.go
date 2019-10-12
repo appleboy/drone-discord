@@ -203,8 +203,6 @@ func (p *Plugin) Exec() error {
 		}
 	}
 
-	fmt.Println(p.Config.File)
-	fmt.Println(len(p.Config.File))
 	for _, f := range p.Config.File {
 		if f == "" {
 			continue
