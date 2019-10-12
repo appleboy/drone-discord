@@ -33,29 +33,36 @@ type (
 		EventPath string
 	}
 
-	// Repo information
+	// Repo information.
 	Repo struct {
 		FullName  string
 		Namespace string
 		Name      string
 	}
 
-	// Build information
+	// Commit information.
+	Commit struct {
+		Sha     string
+		Ref     string
+		Branch  string
+		Link    string
+		Author  string
+		Avatar  string
+		Email   string
+		Message string
+	}
+
+	// Build information.
 	Build struct {
 		Tag      string
 		Event    string
 		Number   int
-		Commit   string
-		RefSpec  string
-		Branch   string
-		Author   string
-		Avatar   string
-		Message  string
-		Email    string
 		Status   string
 		Link     string
 		Started  float64
 		Finished float64
+		PR       string
+		DeployTo string
 	}
 
 	// Config for the plugin.
@@ -116,6 +123,7 @@ type (
 		Build   Build
 		Config  Config
 		Payload Payload
+		Commit  Commit
 	}
 )
 
@@ -287,27 +295,27 @@ func (p *Plugin) Template() EmbedObject {
 	description := ""
 	switch p.Build.Event {
 	case "push":
-		description = fmt.Sprintf("%s pushed to %s", p.Build.Author, p.Build.Branch)
+		description = fmt.Sprintf("%s pushed to %s", p.Commit.Author, p.Commit.Branch)
 	case "pull_request":
 		branch := ""
-		if p.Build.RefSpec != "" {
-			branch = p.Build.RefSpec
+		if p.Commit.Ref != "" {
+			branch = p.Commit.Ref
 		} else {
-			branch = p.Build.Branch
+			branch = p.Commit.Branch
 		}
-		description = fmt.Sprintf("%s updated pull request %s", p.Build.Author, branch)
+		description = fmt.Sprintf("%s updated pull request %s", p.Commit.Author, branch)
 	case "tag":
-		description = fmt.Sprintf("%s pushed tag %s", p.Build.Author, p.Build.Branch)
+		description = fmt.Sprintf("%s pushed tag %s", p.Commit.Author, p.Commit.Branch)
 	}
 
 	return EmbedObject{
-		Title:       p.Build.Message,
+		Title:       p.Commit.Message,
 		Description: description,
 		URL:         p.Build.Link,
 		Color:       p.Color(),
 		Author: EmbedAuthorObject{
-			Name:    p.Build.Author,
-			IconURL: p.Build.Avatar,
+			Name:    p.Commit.Author,
+			IconURL: p.Commit.Avatar,
 		},
 		Footer: EmbedFooterObject{
 			Text:    DroneDesc,

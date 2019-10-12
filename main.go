@@ -111,6 +111,11 @@ func main() {
 			EnvVar: "DRONE_COMMIT_BRANCH",
 		},
 		cli.StringFlag{
+			Name:   "commit.link",
+			Usage:  "git commit link",
+			EnvVar: "DRONE_COMMIT_LINK",
+		},
+		cli.StringFlag{
 			Name:   "commit.author",
 			Usage:  "git author name",
 			EnvVar: "DRONE_COMMIT_AUTHOR",
@@ -157,6 +162,11 @@ func main() {
 			Usage:  "build tag",
 			EnvVar: "DRONE_TAG",
 		},
+		cli.StringFlag{
+			Name:   "pull.request",
+			Usage:  "pull request",
+			EnvVar: "DRONE_PULL_REQUEST",
+		},
 		cli.Float64Flag{
 			Name:   "job.started",
 			Usage:  "job started",
@@ -201,6 +211,11 @@ func main() {
 			Usage:  "The GitHub workspace path. Value: /github/workspace.",
 			EnvVar: "GITHUB_WORKSPACE",
 		},
+		cli.StringFlag{
+			Name:   "deploy.to",
+			Usage:  "Provides the target deployment environment for the running build. This value is only available to promotion and rollback pipelines.",
+			EnvVar: "DRONE_DEPLOY_TO",
+		},
 	}
 
 	if err := app.Run(os.Args); err != nil {
@@ -226,21 +241,26 @@ func run(c *cli.Context) error {
 			Namespace: c.String("repo.namespace"),
 			Name:      c.String("repo.name"),
 		},
+		Commit: Commit{
+			Sha:     c.String("commit.sha"),
+			Ref:     c.String("commit.ref"),
+			Branch:  c.String("commit.branch"),
+			Link:    c.String("commit.link"),
+			Author:  c.String("commit.author"),
+			Email:   c.String("commit.author.email"),
+			Avatar:  c.String("commit.author.avatar"),
+			Message: c.String("commit.message"),
+		},
 		Build: Build{
 			Tag:      c.String("build.tag"),
 			Number:   c.Int("build.number"),
 			Event:    c.String("build.event"),
 			Status:   c.String("build.status"),
-			Commit:   c.String("commit.sha"),
-			RefSpec:  c.String("commit.refspec"),
-			Branch:   c.String("commit.branch"),
-			Author:   c.String("commit.author"),
-			Email:    c.String("commit.author.email"),
-			Avatar:   c.String("commit.author.avatar"),
-			Message:  c.String("commit.message"),
 			Link:     c.String("build.link"),
 			Started:  c.Float64("job.started"),
 			Finished: c.Float64("job.finished"),
+			PR:       c.String("pull.request"),
+			DeployTo: c.String("deploy.to"),
 		},
 		Config: Config{
 			WebhookID:    c.String("webhook-id"),
