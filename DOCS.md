@@ -5,6 +5,7 @@ author: appleboy
 tags: [ notifications, chat ]
 repo: appleboy/drone-discord
 logo: discord.svg
+repo: appleboy/drone-discord
 image: appleboy/drone-discord
 ---
 
