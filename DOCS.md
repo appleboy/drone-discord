@@ -13,7 +13,7 @@ Webhooks are a low-effort way to post messages to channels in Discord. They do n
 The discord plugin posts build status messages to discord channel. The below pipeline configuration demonstrates simple usage:
 
 ```yaml
-- name: send notification
+- name: discord notification
   image: appleboy/drone-discored
   settings:
     webhook_id: xxxxxxxxxx
@@ -23,60 +23,65 @@ The discord plugin posts build status messages to discord channel. The below pip
 Example configuration with TTS (text-to-speech) message:
 
 ```diff
-  image: appleboy/drone-discored
-  settings:
-    webhook_id: xxxxxxxxxx
-    webhook_token: xxxxxxxxxx
-+   tts: true
-    message: "Testing from drone image"
+  - name: discord notification
+    image: appleboy/drone-discored
+    settings:
+      webhook_id: xxxxxxxxxx
+      webhook_token: xxxxxxxxxx
++     tts: true
+      message: "Testing from drone image"
 ```
 
 Example configuration with override the default username of the webhook:
 
 ```diff
-  image: appleboy/drone-discored
-  settings:
-    webhook_id: xxxxxxxxxx
-    webhook_token: xxxxxxxxxx
-+   username: appleboy
-    message: "Testing from drone image"
+  - name: discord notification
+    image: appleboy/drone-discored
+    settings:
+      webhook_id: xxxxxxxxxx
+      webhook_token: xxxxxxxxxx
++     username: appleboy
+      message: "Testing from drone image"
 ```
 
 Example configuration with override the default avatar of the webhook:
 
 ```diff
-  image: appleboy/drone-discored
-  settings:
-    webhook_id: xxxxxxxxxx
-    webhook_token: xxxxxxxxxx
-+   avatar_url: http://exampple.com/appleboy.png
-    message: "Testing from drone image"
+  - name: discord notification
+    image: appleboy/drone-discored
+    settings:
+      webhook_id: xxxxxxxxxx
+      webhook_token: xxxxxxxxxx
++     avatar_url: http://exampple.com/appleboy.png
+      message: "Testing from drone image"
 ```
 
 Example configuration with a custom message template:
 
 ```diff
-  image: appleboy/drone-discored
-  settings:
-    webhook_id: xxxxxxxxxx
-    webhook_token: xxxxxxxxxx
-+   message: >
-+     {{#success build.status}}
-+       build {{build.number}} succeeded. Good job.
-+     {{else}}
-+       build {{build.number}} failed. Fix me please.
-+     {{/success}}
+  - name: discord notification
+    image: appleboy/drone-discored
+    settings:
+      webhook_id: xxxxxxxxxx
+      webhook_token: xxxxxxxxxx
++     message: >
++       {{#success build.status}}
++         build {{build.number}} succeeded. Good job.
++       {{else}}
++         build {{build.number}} failed. Fix me please.
++       {{/success}}
 ```
 
 Example configuration using credentials from secrets:
 
 ```diff
-  image: appleboy/drone-discored
-  settings:
--   webhook_id: xxxxxxxxxx
--   webhook_token: xxxxxxxxxx
-+   secrets: [ discord_webhook_id, discord_webhook_token ]
-    message: "Testing from drone image"
+  - name: discord notification
+    image: appleboy/drone-discored
+    settings:
+-     webhook_id: xxxxxxxxxx
+-     webhook_token: xxxxxxxxxx
++     secrets: [ discord_webhook_id, discord_webhook_token ]
+      message: "Testing from drone image"
 ```
 
 ## Secret Reference
