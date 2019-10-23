@@ -59,8 +59,8 @@ type (
 		Number   int
 		Status   string
 		Link     string
-		Started  int64
-		Finished int64
+		Started  float64
+		Finished float64
 		PR       string
 		DeployTo string
 	}
