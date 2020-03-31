@@ -1,5 +1,7 @@
 # drone-[discord](https://discordapp.com)
 
+sorry, this is only for the test.
+
 ![logo](images/discord-logo.png)
 
 Drone plugin for sending message to Discord channel using Webhook.
