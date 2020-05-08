@@ -85,9 +85,10 @@ Example configuration using credentials from secrets:
   - name: discord notification
     image: appleboy/drone-discord
     settings:
--     webhook_id: xxxxxxxxxx
--     webhook_token: xxxxxxxxxx
-+     secrets: [ discord_webhook_id, discord_webhook_token ]
+      webhook_id:
+        from_secret: discord_webhook_id
+      webhook_token:
+        from_secret: discord_webhook_token
       message: "Testing from drone image"
 ```
 
