@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/joho/godotenv"
-	_ "github.com/joho/godotenv/autoload"
 	"github.com/urfave/cli"
 )
 
@@ -15,6 +14,11 @@ import (
 var Version string
 
 func main() {
+	// Load env-file if it exists first
+	if filename, found := os.LookupEnv("PLUGIN_ENV_FILE"); found {
+		godotenv.Load(filename)
+	}
+
 	year := fmt.Sprintf("%v", time.Now().Year())
 	app := cli.NewApp()
 	app.Name = "Drone Discord"
@@ -177,10 +181,6 @@ func main() {
 			Usage:  "job finished",
 			EnvVar: "DRONE_BUILD_FINISHED",
 		},
-		cli.StringFlag{
-			Name:  "env-file",
-			Usage: "source env file",
-		},
 		cli.BoolFlag{
 			Name:   "github",
 			Usage:  "Boolean value, indicates the runtime environment is GitHub Action.",
@@ -218,16 +218,16 @@ func main() {
 		},
 	}
 
+	if _, err := os.Stat("/run/drone/env"); err == nil {
+		godotenv.Overload("/run/drone/env")
+	}
+
 	if err := app.Run(os.Args); err != nil {
 		log.Fatal(err)
 	}
 }
 
 func run(c *cli.Context) error {
-	if c.String("env-file") != "" {
-		_ = godotenv.Load(c.String("env-file"))
-	}
-
 	plugin := Plugin{
 		GitHub: GitHub{
 			Workflow:  c.String("github.workflow"),
