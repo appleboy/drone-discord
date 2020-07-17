@@ -19,6 +19,10 @@ func main() {
 		godotenv.Load(filename)
 	}
 
+	if _, err := os.Stat("/run/drone/env"); err == nil {
+		godotenv.Overload("/run/drone/env")
+	}
+
 	year := fmt.Sprintf("%v", time.Now().Year())
 	app := cli.NewApp()
 	app.Name = "Drone Discord"
@@ -216,10 +220,6 @@ func main() {
 			Usage:  "Provides the target deployment environment for the running build. This value is only available to promotion and rollback pipelines.",
 			EnvVar: "DRONE_DEPLOY_TO",
 		},
-	}
-
-	if _, err := os.Stat("/run/drone/env"); err == nil {
-		godotenv.Overload("/run/drone/env")
 	}
 
 	if err := app.Run(os.Args); err != nil {
