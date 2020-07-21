@@ -176,13 +176,13 @@ func main() {
 			EnvVar: "DRONE_PULL_REQUEST",
 		},
 		cli.Float64Flag{
-			Name:   "job.started",
-			Usage:  "job started",
+			Name:   "build.started",
+			Usage:  "build started",
 			EnvVar: "DRONE_BUILD_STARTED",
 		},
 		cli.Float64Flag{
-			Name:   "job.finished",
-			Usage:  "job finished",
+			Name:   "build.finished",
+			Usage:  "build finished",
 			EnvVar: "DRONE_BUILD_FINISHED",
 		},
 		cli.BoolFlag{
@@ -257,8 +257,8 @@ func run(c *cli.Context) error {
 			Event:    c.String("build.event"),
 			Status:   c.String("build.status"),
 			Link:     c.String("build.link"),
-			Started:  c.Float64("job.started"),
-			Finished: c.Float64("job.finished"),
+			Started:  c.Float64("build.started"),
+			Finished: c.Float64("build.finished"),
 			PR:       c.String("pull.request"),
 			DeployTo: c.String("deploy.to"),
 		},
