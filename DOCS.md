@@ -14,7 +14,7 @@ Webhooks are a low-effort way to post messages to channels in Discord. They do n
 The webhook provided by discord is a single URL which contains the webhook_id and the webhook_token. The URL follows the following pattern: 
 
 ```sh
-https://discord.com/ap/webhooks/<webhook_id>/<webhook_token>
+https://discord.com/api/webhooks/<webhook_id>/<webhook_token>
 ```
 
 The discord plugin posts build status messages to discord channel. The below pipeline configuration demonstrates simple usage:
