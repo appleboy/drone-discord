@@ -13,7 +13,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/drone/drone-template-lib/template"
+	"github.com/appleboy/drone-template-lib/template"
 )
 
 const (
@@ -259,7 +259,6 @@ func (p *Plugin) SendMessage() error {
 		return err
 	}
 	_, err := http.Post(webhookURL, "application/json; charset=utf-8", b)
-
 	if err != nil {
 		return err
 	}
