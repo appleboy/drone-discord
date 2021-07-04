@@ -83,7 +83,7 @@ func TestTemplate(t *testing.T) {
 	err = plugin.Exec()
 	assert.Nil(t, err)
 
-	//change color for embed message
+	// change color for embed message
 	plugin.Config.Color = "#4842f4"
 	plugin.Commit.Message = "Change embed color to #4842f4"
 	plugin.Clear()
