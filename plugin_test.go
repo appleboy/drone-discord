@@ -34,6 +34,9 @@ func TestTemplate(t *testing.T) {
 			Link:   "https://github.com/appleboy/go-hello",
 			Event:  "tag",
 		},
+		Source: Source{
+			Branch: "feature/awesome-feature",
+		},
 
 		Config: Config{
 			WebhookID:    os.Getenv("WEBHOOK_ID"),

@@ -144,6 +144,12 @@ func main() {
 			EnvVar: "DRONE_COMMIT_MESSAGE",
 		},
 		cli.StringFlag{
+			Name:   "source.branch",
+			Value:  "develop",
+			Usage:  "git source branch",
+			EnvVar: "DRONE_SOURCE_BRANCH",
+		},
+		cli.StringFlag{
 			Name:   "build.event",
 			Value:  "push",
 			Usage:  "build event",
@@ -250,6 +256,9 @@ func run(c *cli.Context) error {
 			Email:   c.String("commit.author.email"),
 			Avatar:  c.String("commit.author.avatar"),
 			Message: c.String("commit.message"),
+		},
+		Source: Source{
+			Branch: c.String("source.branch"),
 		},
 		Build: Build{
 			Tag:      c.String("build.tag"),

@@ -52,6 +52,10 @@ type (
 		Message string
 	}
 
+	Source struct {
+		Branch string
+	}
+
 	// Build information.
 	Build struct {
 		Tag      string
@@ -121,6 +125,7 @@ type (
 		GitHub  GitHub
 		Repo    Repo
 		Build   Build
+		Source  Source
 		Config  Config
 		Payload Payload
 		Commit  Commit
