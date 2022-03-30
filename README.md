@@ -107,7 +107,32 @@ docker run --rm \
   appleboy/drone-discord
 ```
 
+## Declarative usage
+
 You can get more [information](DOCS.md) about how to use this plugin in drone.
+
+```yml
+- name: msg status
+  image: appleboy/drone-discord
+  settings:
+    webhook_id:
+      from_secret: discord_id
+    webhook_token:
+      from_secret: discord_token
+    message: "{{#success build.status}}✅{{else}}❌{{/success}}  Repository `[{{repo.name}}/{{commit.branch}}]` triggered by event `[{{uppercase build.event}}]` for build.\n    - Commit [[{{commit.sha}}]({{commit.link}})]\n    - Author `[{{commit.author}} / {{commit.email}}]`\n    - Message: {{commit.message}}    - Drone build [[#{{build.number}}]({{build.link}})] reported `[{{uppercase build.status}}]` at `[{{datetime build.finished \"2006.01.02 15:04\" \"\"}}]`\n"
+    when:
+      status: [ success, failure, changed ]
+```
+
+```yml
+- name: multi line msg status 
+  ...
+    message: >
+    Line one
+    Line two
+```
+
+
 
 ## Testing
 
