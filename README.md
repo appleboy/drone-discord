@@ -107,7 +107,7 @@ docker run --rm \
   appleboy/drone-discord
 ```
 
-## Declarative usage
+## Declarative environment config usage
 
 You can get more [information](DOCS.md) about how to use this plugin in drone.
 
