@@ -128,8 +128,8 @@ You can get more [information](DOCS.md) about how to use this plugin in drone.
 - name: multi line msg status 
   ...
     message: >
-    Line one
-    Line two
+      Line one
+      Line two
 ```
 
 
