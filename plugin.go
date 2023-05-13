@@ -110,7 +110,7 @@ type (
 	Payload struct {
 		Wait      bool          `json:"wait"`
 		Content   string        `json:"content"`
-		Username  string        `json:"username"`
+		Username  string        `json:"username,omitempty"`
 		AvatarURL string        `json:"avatar_url"`
 		TTS       bool          `json:"tts"`
 		Embeds    []EmbedObject `json:"embeds"`
