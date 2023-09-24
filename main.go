@@ -16,11 +16,11 @@ var Version string
 func main() {
 	// Load env-file if it exists first
 	if filename, found := os.LookupEnv("PLUGIN_ENV_FILE"); found {
-		godotenv.Load(filename)
+		_ = godotenv.Load(filename)
 	}
 
 	if _, err := os.Stat("/run/drone/env"); err == nil {
-		godotenv.Overload("/run/drone/env")
+		_ = godotenv.Overload("/run/drone/env")
 	}
 
 	year := fmt.Sprintf("%v", time.Now().Year())
