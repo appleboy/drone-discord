@@ -11,7 +11,7 @@ image: appleboy/drone-discord
 
 Webhooks are a low-effort way to post messages to channels in Discord. They do not require a bot user or authentication to use.
 
-The webhook provided by discord is a single URL which contains the webhook_id and the webhook_token. The URL follows the following pattern: 
+The webhook provided by discord is a single URL which contains the webhook_id and the webhook_token. The URL follows the following pattern.
 
 ```sh
 https://discord.com/api/webhooks/<webhook_id>/<webhook_token>
