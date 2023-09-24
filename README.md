@@ -5,12 +5,9 @@
 Drone plugin for sending message to Discord channel using Webhook.
 
 [![GoDoc](https://godoc.org/github.com/appleboy/drone-discord?status.svg)](https://godoc.org/github.com/appleboy/drone-discord)
-[![Build Status](https://cloud.drone.io/api/badges/appleboy/drone-discord/status.svg)](https://cloud.drone.io/appleboy/drone-discord)
-[![Build status](https://ci.appveyor.com/api/projects/status/xj24ye9lu68a9sqm?svg=true)](https://ci.appveyor.com/project/appleboy/drone-discord-bne7m)
 [![codecov](https://codecov.io/gh/appleboy/drone-discord/branch/master/graph/badge.svg)](https://codecov.io/gh/appleboy/drone-discord)
 [![Go Report Card](https://goreportcard.com/badge/github.com/appleboy/drone-discord)](https://goreportcard.com/report/github.com/appleboy/drone-discord)
 [![Docker Pulls](https://img.shields.io/docker/pulls/appleboy/drone-discord.svg)](https://hub.docker.com/r/appleboy/drone-discord/)
-[![microbadger](https://images.microbadger.com/badges/image/appleboy/drone-discord:linux-amd64.svg)](https://microbadger.com/images/appleboy/drone-discord:linux-amd64 "Get your own image badge on microbadger.com")
 
 Webhooks are a low-effort way to post messages to channels in Discord. They do not require a bot user or authentication to use. See more [api document information](https://discordapp.com/developers/docs/resources/webhook). For the usage information and a listing of the available options please take a look at [the docs](http://plugins.drone.io/appleboy/drone-discord/).
 
