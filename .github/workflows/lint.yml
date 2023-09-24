@@ -32,6 +32,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: setup sshd server
+        run: |
+          apk add git make curl perl bash build-base zlib-dev ucl-dev
+
       - name: testing
         run: |
           make test
