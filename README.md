@@ -132,8 +132,6 @@ You can get more [information](DOCS.md) about how to use this plugin in drone.
       Line two
 ```
 
-
-
 ## Testing
 
 Test the package with the following command:
