@@ -86,32 +86,11 @@ $(EXECUTABLE): $(GOFILES)
 build_linux_amd64:
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 $(GO) build -a -tags '$(TAGS)' -ldflags '$(EXTLDFLAGS)-s -w $(LDFLAGS)' -o release/linux/amd64/$(DEPLOY_IMAGE)
 
-build_linux_i386:
-	CGO_ENABLED=0 GOOS=linux GOARCH=386 $(GO) build -a -tags '$(TAGS)' -ldflags '$(EXTLDFLAGS)-s -w $(LDFLAGS)' -o release/linux/i386/$(DEPLOY_IMAGE)
-
 build_linux_arm64:
 	CGO_ENABLED=0 GOOS=linux GOARCH=arm64 $(GO) build -a -tags '$(TAGS)' -ldflags '$(EXTLDFLAGS)-s -w $(LDFLAGS)' -o release/linux/arm64/$(DEPLOY_IMAGE)
 
 build_linux_arm:
 	CGO_ENABLED=0 GOOS=linux GOARCH=arm GOARM=7 $(GO) build -a -tags '$(TAGS)' -ldflags '$(EXTLDFLAGS)-s -w $(LDFLAGS)' -o release/linux/arm/$(DEPLOY_IMAGE)
-
-ssh-server:
-	adduser -h /home/drone-scp -s /bin/sh -D -S drone-scp
-	echo drone-scp:1234 | chpasswd
-	mkdir -p /home/drone-scp/.ssh
-	chmod 700 /home/drone-scp/.ssh
-	cat tests/.ssh/id_rsa.pub >> /home/drone-scp/.ssh/authorized_keys
-	cat tests/.ssh/test.pub >> /home/drone-scp/.ssh/authorized_keys
-	chmod 600 /home/drone-scp/.ssh/authorized_keys
-	chown -R drone-scp /home/drone-scp/.ssh
-	apk add --update openssh openrc
-	rm -rf /etc/ssh/ssh_host_rsa_key /etc/ssh/ssh_host_dsa_key
-	sed -i 's/^#PubkeyAuthentication yes/PubkeyAuthentication yes/g' /etc/ssh/sshd_config
-	sed -i 's/AllowTcpForwarding no/AllowTcpForwarding yes/g' /etc/ssh/sshd_config
-	./tests/entrypoint.sh /usr/sbin/sshd -D &
-
-coverage:
-	sed -i '/main.go/d' coverage.txt
 
 .PHONY: deps-backend
 deps-backend:
