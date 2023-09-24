@@ -15,6 +15,6 @@ LABEL org.opencontainers.image.licenses=MIT
 RUN apk add --no-cache ca-certificates=20230506-r0 && \
   rm -rf /var/cache/apk/*
 
-COPY release/${TARGETOS}/${TARGETARCH}/drone-ssh /bin/
+COPY release/${TARGETOS}/${TARGETARCH}/drone-discord /bin/
 
-ENTRYPOINT ["/bin/drone-ssh"]
+ENTRYPOINT ["/bin/drone-discord"]
