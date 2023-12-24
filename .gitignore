@@ -18,3 +18,4 @@ drone-discord
 coverage.txt
 release/
 dist/
+bin/
