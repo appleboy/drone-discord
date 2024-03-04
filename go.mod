@@ -5,7 +5,7 @@ go 1.20
 require (
 	github.com/appleboy/drone-template-lib v1.3.0
 	github.com/joho/godotenv v1.5.1
-	github.com/stretchr/testify v1.8.4
+	github.com/stretchr/testify v1.9.0
 	github.com/urfave/cli v1.22.14
 )
 
