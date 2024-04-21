@@ -2,7 +2,7 @@
 
 ![logo](images/discord-logo.png)
 
-Drone plugin for sending message to Discord channel using Webhook.
+[Drone](https://www.drone.io/) / [Woodpecker](https://woodpecker-ci.org/) plugin for sending message to Discord channel using Webhook.
 
 [![GoDoc](https://godoc.org/github.com/appleboy/drone-discord?status.svg)](https://godoc.org/github.com/appleboy/drone-discord)
 [![codecov](https://codecov.io/gh/appleboy/drone-discord/branch/master/graph/badge.svg)](https://codecov.io/gh/appleboy/drone-discord)
