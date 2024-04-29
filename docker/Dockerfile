@@ -12,7 +12,7 @@ LABEL org.opencontainers.image.source=https://github.com/appleboy/drone-discord
 LABEL org.opencontainers.image.description="Drone Discord"
 LABEL org.opencontainers.image.licenses=MIT
 
-RUN apk add --no-cache ca-certificates=20230506-r0 && \
+RUN apk add --no-cache ca-certificates && \
   rm -rf /var/cache/apk/*
 
 COPY release/${TARGETOS}/${TARGETARCH}/drone-discord /bin/
