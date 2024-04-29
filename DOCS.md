@@ -1,12 +1,17 @@
 ---
 date: 2017-06-10T00:00:00+00:00
 title: Discord
+name: Discord
+description: Send message to Discord channel using Webhook
 author: appleboy
 tags: [ notifications, chat ]
 repo: appleboy/drone-discord
 logo: discord.svg
-repo: appleboy/drone-discord
+icon: https://raw.githubusercontent.com/appleboy/drone-discord/main/images/discord-mark-blue.svg
 image: appleboy/drone-discord
+containerImage: appleboy/drone-discord
+containerImageUrl: https://hub.docker.com/r/appleboy/drone-discord
+url: https://github.com/appleboy/drone-discord
 ---
 
 Webhooks are a low-effort way to post messages to channels in Discord. They do not require a bot user or authentication to use.
