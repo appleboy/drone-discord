@@ -15,7 +15,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Setup golangci-lint
-        uses: golangci/golangci-lint-action@v3
+        uses: golangci/golangci-lint-action@v5
         with:
           version: latest
           args: --verbose
@@ -27,7 +27,7 @@ jobs:
 
   testing:
     runs-on: ubuntu-latest
-    container: golang:1.19-alpine
+    container: golang:1.22-alpine
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
