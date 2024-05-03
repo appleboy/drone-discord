@@ -7,7 +7,7 @@ author: appleboy
 tags: [ notifications, chat ]
 repo: appleboy/drone-discord
 logo: discord.svg
-icon: https://raw.githubusercontent.com/appleboy/drone-discord/main/images/discord-mark-blue.svg
+icon: https://raw.githubusercontent.com/appleboy/drone-discord/master/images/discord-mark-blue.svg
 image: appleboy/drone-discord
 containerImage: appleboy/drone-discord
 containerImageUrl: https://hub.docker.com/r/appleboy/drone-discord
