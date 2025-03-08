@@ -214,7 +214,16 @@ func (p *Plugin) Exec(ctx context.Context) error {
 		return fmt.Errorf("failed to validate config: %w", err)
 	}
 
-	if len(p.Config.Message) == 0 {
+	// check if message is empty
+	messages := []string{}
+	for _, m := range p.Config.Message {
+		if m == "" {
+			continue
+		}
+		messages = append(messages, m)
+	}
+
+	if len(messages) == 0 {
 		object := p.Template()
 		p.Payload.Embeds = []EmbedObject{object}
 		err := p.SendMessage(ctx)
@@ -223,8 +232,8 @@ func (p *Plugin) Exec(ctx context.Context) error {
 		}
 	}
 
-	if len(p.Config.Message) > 0 {
-		for _, m := range p.Config.Message {
+	if len(messages) > 0 {
+		for _, m := range messages {
 			txt, err := templateMessage(m, *p)
 			if err != nil {
 				return err
