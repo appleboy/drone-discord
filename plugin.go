@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -12,6 +13,7 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/appleboy/drone-template-lib/template"
 )
@@ -169,7 +171,7 @@ func newfileUploadRequest(uri string, params map[string]string, paramName, path 
 }
 
 // Exec executes the plugin.
-func (p *Plugin) Exec() error {
+func (p *Plugin) Exec(ctx context.Context) error {
 	if p.Config.WebhookID == "" || p.Config.WebhookToken == "" {
 		return errors.New("missing discord config")
 	}
@@ -177,7 +179,7 @@ func (p *Plugin) Exec() error {
 	if len(p.Config.Message) == 0 {
 		object := p.Template()
 		p.Payload.Embeds = []EmbedObject{object}
-		err := p.SendMessage()
+		err := p.SendMessage(ctx)
 		if err != nil {
 			return err
 		}
@@ -195,7 +197,7 @@ func (p *Plugin) Exec() error {
 				p.Payload.Embeds = append(p.Payload.Embeds, object)
 			} else {
 				p.Payload.Content = txt
-				err = p.SendMessage()
+				err = p.SendMessage(ctx)
 				if err != nil {
 					return err
 				}
@@ -203,7 +205,7 @@ func (p *Plugin) Exec() error {
 		}
 
 		if len(p.Payload.Embeds) > 0 {
-			err := p.SendMessage()
+			err := p.SendMessage(ctx)
 			if err != nil {
 				return err
 			}
@@ -259,15 +261,30 @@ func (p *Plugin) SendFile(file string) error {
 }
 
 // SendMessage to send discord message.
-func (p *Plugin) SendMessage() error {
+func (p *Plugin) SendMessage(ctx context.Context) error {
 	webhookURL := fmt.Sprintf("https://discordapp.com/api/webhooks/%s/%s", p.Config.WebhookID, p.Config.WebhookToken)
 	b := new(bytes.Buffer)
 	if err := json.NewEncoder(b).Encode(p.Payload); err != nil {
 		return err
 	}
-	_, err := http.Post(webhookURL, "application/json; charset=utf-8", b)
+
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, webhookURL, b)
 	if err != nil {
 		return err
+	}
+	req.Header.Set("Content-Type", "application/json; charset=utf-8")
+
+	client := &http.Client{
+		Timeout: 10 * time.Second,
+	}
+	resp, err := client.Do(req)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return fmt.Errorf("failed to send message, status code: %d", resp.StatusCode)
 	}
 
 	return nil

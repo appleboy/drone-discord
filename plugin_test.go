@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"os"
 	"testing"
 	"time"
@@ -11,7 +12,7 @@ import (
 func TestMissingConfig(t *testing.T) {
 	var plugin Plugin
 
-	err := plugin.Exec()
+	err := plugin.Exec(context.Background())
 
 	assert.NotNil(t, err)
 }
@@ -53,14 +54,14 @@ func TestTemplate(t *testing.T) {
 		},
 	}
 
-	err := plugin.Exec()
+	err := plugin.Exec(context.Background())
 	assert.Nil(t, err)
 
 	plugin.Clear()
 	plugin.Config.Message = []string{"I am appleboy"}
 	plugin.Payload.TTS = true
 	plugin.Payload.Wait = true
-	err = plugin.Exec()
+	err = plugin.Exec(context.Background())
 	assert.Nil(t, err)
 
 	// send success embed message
@@ -68,14 +69,14 @@ func TestTemplate(t *testing.T) {
 	plugin.Payload.TTS = false
 	plugin.Payload.Wait = false
 	plugin.Clear()
-	err = plugin.Exec()
+	err = plugin.Exec(context.Background())
 	assert.Nil(t, err)
 
 	// send success embed message
 	plugin.Build.Status = "failure"
 	plugin.Commit.Message = "send failure embed message"
 	plugin.Clear()
-	err = plugin.Exec()
+	err = plugin.Exec(context.Background())
 	assert.Nil(t, err)
 	time.Sleep(1 * time.Second)
 
@@ -83,14 +84,14 @@ func TestTemplate(t *testing.T) {
 	plugin.Build.Status = "test"
 	plugin.Commit.Message = "send default embed message"
 	plugin.Clear()
-	err = plugin.Exec()
+	err = plugin.Exec(context.Background())
 	assert.Nil(t, err)
 
 	// change color for embed message
 	plugin.Config.Color = "#4842f4"
 	plugin.Commit.Message = "Change embed color to #4842f4"
 	plugin.Clear()
-	err = plugin.Exec()
+	err = plugin.Exec(context.Background())
 	assert.Nil(t, err)
 }
 
@@ -112,12 +113,12 @@ func TestDefaultTemplate(t *testing.T) {
 
 	time.Sleep(1 * time.Second)
 	plugin.Clear()
-	err := plugin.Exec()
+	err := plugin.Exec(context.Background())
 	assert.Nil(t, err)
 
 	plugin.Config.Color = "#f4be41"
 	time.Sleep(1 * time.Second)
 	plugin.Clear()
-	err = plugin.Exec()
+	err = plugin.Exec(context.Background())
 	assert.Nil(t, err)
 }
