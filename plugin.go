@@ -163,7 +163,7 @@ func newfileUploadRequest(uri string, params map[string]string, paramName, path 
 		return nil, err
 	}
 
-	req, err := http.NewRequest("POST", uri, body)
+	req, err := http.NewRequest(http.MethodPost, uri, body)
 	req.Header.Set("Content-Type", writer.FormDataContentType())
 	return req, err
 }

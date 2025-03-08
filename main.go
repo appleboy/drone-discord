@@ -1,9 +1,9 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/joho/godotenv"
@@ -23,11 +23,10 @@ func main() {
 		_ = godotenv.Overload("/run/drone/env")
 	}
 
-	year := fmt.Sprintf("%v", time.Now().Year())
 	app := cli.NewApp()
 	app.Name = "Drone Discord"
 	app.Usage = "Sending message to Discord channel using Webhook"
-	app.Copyright = "Copyright (c) " + year + " Bo-Yi Wu"
+	app.Copyright = "Copyright (c) " + strconv.Itoa(time.Now().Year()) + " Bo-Yi Wu"
 	app.Authors = []*cli.Author{
 		{
 			Name:  "Bo-Yi Wu",
