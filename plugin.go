@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
 	"mime/multipart"
@@ -134,6 +133,22 @@ type (
 	}
 )
 
+func (c *Config) validate() error {
+	var missingFields []string
+
+	if c.WebhookID == "" {
+		missingFields = append(missingFields, "WebhookID")
+	}
+	if c.WebhookToken == "" {
+		missingFields = append(missingFields, "WebhookToken")
+	}
+
+	if len(missingFields) > 0 {
+		return fmt.Errorf("missing discord config: %s", strings.Join(missingFields, ", "))
+	}
+	return nil
+}
+
 func templateMessage(t string, plugin Plugin) (string, error) {
 	return template.RenderTrim(t, plugin)
 }
@@ -172,8 +187,8 @@ func newfileUploadRequest(uri string, params map[string]string, paramName, path 
 
 // Exec executes the plugin.
 func (p *Plugin) Exec(ctx context.Context) error {
-	if p.Config.WebhookID == "" || p.Config.WebhookToken == "" {
-		return errors.New("missing discord config")
+	if err := p.Config.validate(); err != nil {
+		return fmt.Errorf("failed to validate config: %w", err)
 	}
 
 	if len(p.Config.Message) == 0 {
