@@ -283,37 +283,24 @@ func (p *Plugin) DefaultTemplate(title string) EmbedObject {
 
 // Template is plugin default template for Drone CI or GitHub Action.
 func (p *Plugin) Template() EmbedObject {
-	if p.Config.GitHub {
-		message := fmt.Sprintf("%s/%s triggered by %s (%s)",
+	var description string
+	switch {
+	case p.Config.GitHub:
+		description = fmt.Sprintf("%s/%s triggered by %s (%s)",
 			p.Repo.FullName,
 			p.GitHub.Workflow,
 			p.Repo.Namespace,
 			p.GitHub.EventName,
 		)
-
-		return EmbedObject{
-			Title: message,
-			Color: p.Color(),
-			Footer: EmbedFooterObject{
-				Text:    DroneDesc,
-				IconURL: DroneIconURL,
-			},
-		}
-	}
-
-	description := ""
-	switch p.Build.Event {
-	case "push":
+	case p.Build.Event == "push":
 		description = fmt.Sprintf("%s pushed to %s", p.Commit.Author, p.Commit.Branch)
-	case "pull_request":
-		branch := ""
-		if p.Commit.Ref != "" {
-			branch = p.Commit.Ref
-		} else {
+	case p.Build.Event == "pull_request":
+		branch := p.Commit.Ref
+		if branch == "" {
 			branch = p.Commit.Branch
 		}
 		description = fmt.Sprintf("%s updated pull request %s", p.Commit.Author, branch)
-	case "tag":
+	case p.Build.Event == "tag":
 		description = fmt.Sprintf("%s pushed tag %s", p.Commit.Author, p.Commit.Branch)
 	}
 
