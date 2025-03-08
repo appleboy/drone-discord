@@ -2,37 +2,37 @@
 
 ![logo](images/discord-logo.png)
 
-[Drone](https://www.drone.io/) / [Woodpecker](https://woodpecker-ci.org/) plugin for sending message to Discord channel using Webhook.
+[Drone](https://www.drone.io/) / [Woodpecker](https://woodpecker-ci.org/) plugin for sending messages to Discord channels using Webhooks.
 
 [![GoDoc](https://godoc.org/github.com/appleboy/drone-discord?status.svg)](https://godoc.org/github.com/appleboy/drone-discord)
 [![codecov](https://codecov.io/gh/appleboy/drone-discord/branch/master/graph/badge.svg)](https://codecov.io/gh/appleboy/drone-discord)
 [![Go Report Card](https://goreportcard.com/badge/github.com/appleboy/drone-discord)](https://goreportcard.com/report/github.com/appleboy/drone-discord)
 [![Docker Pulls](https://img.shields.io/docker/pulls/appleboy/drone-discord.svg)](https://hub.docker.com/r/appleboy/drone-discord/)
 
-Webhooks are a low-effort way to post messages to channels in Discord. They do not require a bot user or authentication to use. See more [api document information](https://discordapp.com/developers/docs/resources/webhook). For the usage information and a listing of the available options please take a look at [the docs](http://plugins.drone.io/appleboy/drone-discord/).
+Webhooks are a low-effort way to post messages to channels in Discord. They do not require a bot user or authentication to use. See more [API documentation](https://discordapp.com/developers/docs/resources/webhook). For usage information and a list of available options, please refer to [the documentation](http://plugins.drone.io/appleboy/drone-discord/).
 
-Sending discord message using a binary, docker or [Drone CI](http://docs.drone.io/).
+Send Discord messages using a binary, Docker, or [Drone CI](http://docs.drone.io/).
 
 ## Features
 
-* [x] Send Multiple Messages
-* [x] Send Multiple Files
+- [x] Send Multiple Messages
+- [x] Send Multiple Files
 
 ## Build or Download a binary
 
-The pre-compiled binaries can be downloaded from [release page](https://github.com/appleboy/drone-discord/releases). Support the following OS type.
+The pre-compiled binaries can be downloaded from the [release page](https://github.com/appleboy/drone-discord/releases). The following OS types are supported:
 
-* Windows amd64/386
-* Linux arm/amd64/386
-* Darwin amd64/386
+- Windows amd64/386
+- Linux arm/amd64/386
+- Darwin amd64/386
 
-With `Go` installed
+With `Go` installed:
 
 ```sh
 go get -u -v github.com/appleboy/drone-discord
 ```
 
-or build the binary with the following command:
+Or build the binary with the following command:
 
 ```sh
 export GOOS=linux
@@ -47,9 +47,9 @@ go build -v -a -tags netgo -o release/linux/amd64/drone-discord
 
 ## Usage
 
-There are three ways to send notification.
+There are three ways to send notifications:
 
-### Usage from binary
+### Usage from Binary
 
 ```bash
 drone-discord \
@@ -58,7 +58,7 @@ drone-discord \
   --message "Test Message"
 ```
 
-### Usage from docker
+### Usage from Docker
 
 ```bash
 docker run --rm \
@@ -72,7 +72,7 @@ docker run --rm \
   appleboy/drone-discord
 ```
 
-### Usage from drone ci
+### Usage from Drone CI
 
 #### Send Notification
 
@@ -104,9 +104,9 @@ docker run --rm \
   appleboy/drone-discord
 ```
 
-## Declarative environment config usage
+## Declarative Environment Config Usage
 
-You can get more [information](DOCS.md) about how to use this plugin in drone.
+You can get more [information](DOCS.md) about how to use this plugin in Drone.
 
 ```yml
 - name: msg status
@@ -118,11 +118,11 @@ You can get more [information](DOCS.md) about how to use this plugin in drone.
       from_secret: discord_token
     message: "{{#success build.status}}✅{{else}}❌{{/success}}  Repository `[{{repo.name}}/{{commit.branch}}]` triggered by event `[{{uppercase build.event}}]` for build.\n    - Commit [[{{commit.sha}}]({{commit.link}})]\n    - Author `[{{commit.author}} / {{commit.email}}]`\n    - Message: {{commit.message}}    - Drone build [[#{{build.number}}]({{build.link}})] reported `[{{uppercase build.status}}]` at `[{{datetime build.finished \"2006.01.02 15:04\" \"\"}}]`\n"
     when:
-      status: [ success, failure, changed ]
+      status: [success, failure, changed]
 ```
 
 ```yml
-- name: multi line msg status 
+- name: multi line msg status
   ...
     message: >
       Line one
