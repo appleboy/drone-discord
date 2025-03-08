@@ -322,9 +322,15 @@ func (p *Plugin) SendMessage(ctx context.Context) error {
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusNoContent {
-		bodyBytes, _ := io.ReadAll(resp.Body)
-		bodyString := string(bodyBytes)
-		return fmt.Errorf("failed to send message, status code: %d, response: %s", resp.StatusCode, bodyString)
+		bodyBytes, err := io.ReadAll(resp.Body)
+		if err != nil {
+			return fmt.Errorf("failed to read response body: %w", err)
+		}
+		var jsonResponse map[string]interface{}
+		if err := json.Unmarshal(bodyBytes, &jsonResponse); err != nil {
+			return fmt.Errorf("failed to unmarshal response body: %w", err)
+		}
+		return fmt.Errorf("failed to send message, status code: %d, error: %s, code: %v", resp.StatusCode, jsonResponse["message"], jsonResponse["code"])
 	}
 
 	return nil
