@@ -58,6 +58,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-go-
       - name: Run Tests
+        env:
+          WEBHOOK_ID: ${{ secrets.WEBHOOK_ID }}
+          WEBHOOK_TOKEN: ${{ secrets.WEBHOOK_TOKEN }}
         run: |
           go test -v -covermode=atomic -coverprofile=coverage.out
 
