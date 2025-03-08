@@ -8,6 +8,7 @@ import (
 	"io"
 	"mime/multipart"
 	"net/http"
+	"net/url"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -72,6 +73,7 @@ type (
 
 	// Config for the plugin.
 	Config struct {
+		webhookURL   string
 		WebhookID    string
 		WebhookToken string
 		Color        string
@@ -136,17 +138,34 @@ type (
 func (c *Config) validate() error {
 	var missingFields []string
 
-	if c.WebhookID == "" {
-		missingFields = append(missingFields, "WebhookID")
+	if c.webhookURL != "" {
+		_, err := url.Parse(c.webhookURL)
+		if err != nil {
+			return fmt.Errorf("invalid webhook url: %w", err)
+		}
 	}
-	if c.WebhookToken == "" {
-		missingFields = append(missingFields, "WebhookToken")
+
+	if c.webhookURL == "" {
+		if c.WebhookID == "" {
+			missingFields = append(missingFields, "WebhookID")
+		}
+		if c.WebhookToken == "" {
+			missingFields = append(missingFields, "WebhookToken")
+		}
 	}
 
 	if len(missingFields) > 0 {
 		return fmt.Errorf("missing discord config: %s", strings.Join(missingFields, ", "))
 	}
 	return nil
+}
+
+// Get WebhookURL
+func (c *Config) GetWebhookURL() string {
+	if c.webhookURL != "" {
+		return c.webhookURL
+	}
+	return fmt.Sprintf("https://discord.com/api/webhooks/%s/%s", c.WebhookID, c.WebhookToken)
 }
 
 func templateMessage(t string, plugin Plugin) (string, error) {
@@ -242,7 +261,7 @@ func (p *Plugin) Exec(ctx context.Context) error {
 
 // SendFile upload file to discord
 func (p *Plugin) SendFile(file string) error {
-	webhookURL := fmt.Sprintf("https://discord.com/api/webhooks/%s/%s", p.Config.WebhookID, p.Config.WebhookToken)
+	webhookURL := p.Config.GetWebhookURL()
 	extraParams := map[string]string{}
 
 	if p.Payload.Username != "" {
@@ -277,7 +296,7 @@ func (p *Plugin) SendFile(file string) error {
 
 // SendMessage to send discord message.
 func (p *Plugin) SendMessage(ctx context.Context) error {
-	webhookURL := fmt.Sprintf("https://discordapp.com/api/webhooks/%s/%s", p.Config.WebhookID, p.Config.WebhookToken)
+	webhookURL := p.Config.GetWebhookURL()
 	b := new(bytes.Buffer)
 	if err := json.NewEncoder(b).Encode(p.Payload); err != nil {
 		return err
