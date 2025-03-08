@@ -174,10 +174,10 @@ func templateMessage(t string, plugin Plugin) (string, error) {
 
 // Creates a new file upload http request with optional extra params
 // https://matt.aimonetti.net/posts/2013/07/01/golang-multipart-file-upload-example/
-func newfileUploadRequest(uri string, params map[string]string, paramName, path string) (*http.Request, error) {
+func fileUploadRequest(ctx context.Context, uri string, params map[string]string, paramName, path string) (*http.Request, error) {
 	file, err := os.Open(path)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to open file: %w", err)
 	}
 	defer file.Close()
 
@@ -185,23 +185,26 @@ func newfileUploadRequest(uri string, params map[string]string, paramName, path 
 	writer := multipart.NewWriter(body)
 	part, err := writer.CreateFormFile(paramName, filepath.Base(path))
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to create form file: %w", err)
 	}
-	_, err = io.Copy(part, file)
-	if err != nil {
-		return nil, err
+	if _, err = io.Copy(part, file); err != nil {
+		return nil, fmt.Errorf("failed to copy file content: %w", err)
 	}
 	for key, val := range params {
-		_ = writer.WriteField(key, val)
+		if err = writer.WriteField(key, val); err != nil {
+			return nil, fmt.Errorf("failed to write field %s: %w", key, err)
+		}
 	}
-	err = writer.Close()
-	if err != nil {
-		return nil, err
+	if err = writer.Close(); err != nil {
+		return nil, fmt.Errorf("failed to close writer: %w", err)
 	}
 
-	req, err := http.NewRequest(http.MethodPost, uri, body)
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, uri, body)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create new request: %w", err)
+	}
 	req.Header.Set("Content-Type", writer.FormDataContentType())
-	return req, err
+	return req, nil
 }
 
 // Exec executes the plugin.
@@ -250,7 +253,7 @@ func (p *Plugin) Exec(ctx context.Context) error {
 		if f == "" {
 			continue
 		}
-		err := p.SendFile(f)
+		err := p.SendFile(ctx, f)
 		if err != nil {
 			return err
 		}
@@ -260,7 +263,7 @@ func (p *Plugin) Exec(ctx context.Context) error {
 }
 
 // SendFile upload file to discord
-func (p *Plugin) SendFile(file string) error {
+func (p *Plugin) SendFile(ctx context.Context, file string) error {
 	webhookURL := p.Config.GetWebhookURL()
 	extraParams := map[string]string{}
 
@@ -276,7 +279,8 @@ func (p *Plugin) SendFile(file string) error {
 		extraParams["tts"] = "true"
 	}
 
-	request, err := newfileUploadRequest(
+	request, err := fileUploadRequest(
+		ctx,
 		webhookURL,
 		extraParams,
 		"file",
