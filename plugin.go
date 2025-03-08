@@ -322,7 +322,9 @@ func (p *Plugin) SendMessage(ctx context.Context) error {
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusNoContent {
-		return fmt.Errorf("failed to send message, status code: %d", resp.StatusCode)
+		bodyBytes, _ := io.ReadAll(resp.Body)
+		bodyString := string(bodyBytes)
+		return fmt.Errorf("failed to send message, status code: %d, response: %s", resp.StatusCode, bodyString)
 	}
 
 	return nil
