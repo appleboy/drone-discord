@@ -81,6 +81,7 @@ type (
 		File         []string
 		Drone        bool
 		GitHub       bool
+		Debug        bool
 	}
 
 	// EmbedFooterObject for Embed Footer Structure.

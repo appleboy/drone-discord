@@ -8,6 +8,7 @@ import (
 
 	"github.com/joho/godotenv"
 	"github.com/urfave/cli/v2"
+	"github.com/yassinebenaid/godump"
 )
 
 // Version set at compile-time
@@ -235,6 +236,11 @@ func main() {
 			Usage:   "The target deployment environment for the running build. This value is only available to promotion and rollback pipelines.",
 			EnvVars: []string{"DRONE_DEPLOY_TO", "CI_PIPELINE_DEPLOY_TARGET"},
 		},
+		&cli.BoolFlag{
+			Name:    "debug",
+			Usage:   "Enable debug mode.",
+			EnvVars: []string{"PLUGIN_DEBUG", "INPUT_DEBUG", "DEBUG"},
+		},
 	}
 
 	if err := app.Run(os.Args); err != nil {
@@ -289,6 +295,7 @@ func run(c *cli.Context) error {
 			Color:        c.String("color"),
 			Drone:        c.Bool("drone") || c.String("ci.environment") == "woodpecker",
 			GitHub:       c.Bool("github"),
+			Debug:        c.Bool("debug"),
 		},
 		Payload: Payload{
 			Wait:      c.Bool("wait"),
@@ -296,6 +303,10 @@ func run(c *cli.Context) error {
 			AvatarURL: c.String("avatar-url"),
 			TTS:       c.Bool("tts"),
 		},
+	}
+
+	if plugin.Config.Debug {
+		_ = godump.Dump(plugin)
 	}
 
 	return plugin.Exec(c.Context)
