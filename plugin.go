@@ -402,22 +402,25 @@ func (p *Plugin) Clear() {
 
 // Color code of the embed
 func (p *Plugin) Color() int {
+	// Handle custom color
 	if p.Config.Color != "" {
-		p.Config.Color = strings.Replace(p.Config.Color, "#", "", -1)
-		if s, err := strconv.ParseInt(p.Config.Color, 16, 32); err == nil {
+		cleanColor := strings.TrimPrefix(p.Config.Color, "#")
+		if s, err := strconv.ParseInt(cleanColor, 16, 32); err == nil {
 			return int(s)
 		}
 	}
 
-	switch p.Build.Status {
-	case "success":
-		// green
-		return 0x1ac600
-	case "failure", "error", "killed":
-		// red
-		return 0xff3232
-	default:
-		// yellow
-		return 0xffd930
+	// Predefined status colors
+	statusColors := map[string]int{
+		"success": 0x1ac600, // green
+		"failure": 0xff3232, // red
+		"error":   0xff3232, // red
+		"killed":  0xff3232, // red
+		"default": 0xffd930, // yellow
 	}
+
+	if color, exists := statusColors[p.Build.Status]; exists {
+		return color
+	}
+	return statusColors["default"]
 }
