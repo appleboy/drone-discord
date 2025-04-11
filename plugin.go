@@ -176,35 +176,49 @@ func templateMessage(t string, plugin Plugin) (string, error) {
 // Creates a new file upload http request with optional extra params
 // https://matt.aimonetti.net/posts/2013/07/01/golang-multipart-file-upload-example/
 func fileUploadRequest(ctx context.Context, uri string, params map[string]string, paramName, path string) (*http.Request, error) {
-	file, err := os.Open(path)
-	if err != nil {
-		return nil, fmt.Errorf("failed to open file: %w", err)
+	// Clean and check path
+	path = filepath.Clean(path)
+	if _, err := os.Stat(path); err != nil {
+		return nil, fmt.Errorf("file %s not accessible: %w", path, err)
 	}
-	defer file.Close()
 
+	// Read file content
+	content, err := os.ReadFile(path)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read file %s: %w", path, err)
+	}
+
+	// Create multipart form
 	body := &bytes.Buffer{}
 	writer := multipart.NewWriter(body)
+
+	// Add file
 	part, err := writer.CreateFormFile(paramName, filepath.Base(path))
 	if err != nil {
 		return nil, fmt.Errorf("failed to create form file: %w", err)
 	}
-	if _, err = io.Copy(part, file); err != nil {
-		return nil, fmt.Errorf("failed to copy file content: %w", err)
+	if _, err = part.Write(content); err != nil {
+		return nil, fmt.Errorf("failed to write file content: %w", err)
 	}
+
+	// Add extra params
 	for key, val := range params {
 		if err = writer.WriteField(key, val); err != nil {
 			return nil, fmt.Errorf("failed to write field %s: %w", key, err)
 		}
 	}
+
 	if err = writer.Close(); err != nil {
-		return nil, fmt.Errorf("failed to close writer: %w", err)
+		return nil, fmt.Errorf("failed to close multipart writer: %w", err)
 	}
 
+	// Create request
 	req, err := http.NewRequestWithContext(ctx, http.MethodPost, uri, body)
 	if err != nil {
-		return nil, fmt.Errorf("failed to create new request: %w", err)
+		return nil, fmt.Errorf("failed to create request: %w", err)
 	}
 	req.Header.Set("Content-Type", writer.FormDataContentType())
+
 	return req, nil
 }
 
