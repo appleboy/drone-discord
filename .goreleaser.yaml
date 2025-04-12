@@ -98,6 +98,8 @@ release:
   extra_files:
     - glob: ./**.xz
 
+  name_template: "Drone Discord {{.Version}}"
+
 changelog:
   use: github
   groups:
