@@ -1,6 +1,5 @@
-DIST := dist
 EXECUTABLE := drone-discord
-GOFMT ?= gofumpt -l -s -w
+GOFMT ?= gofumpt -l -w
 GO ?= go
 GOFILES := $(shell find . -name "*.go" -type f)
 HAS_GO = $(shell hash $(GO) > /dev/null 2>&1 && echo "GO" || echo "NOGO" )
@@ -43,7 +42,7 @@ all: build
 
 fmt:
 	@hash gofumpt > /dev/null 2>&1; if [ $$? -ne 0 ]; then \
-		$(GO) install mvdan.cc/gofumpt; \
+		$(GO) install mvdan.cc/gofumpt@latest; \
 	fi
 	$(GOFMT) -w $(GOFILES)
 
