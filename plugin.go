@@ -126,35 +126,32 @@ type (
 
 	// Plugin values.
 	Plugin struct {
-		GitHub  GitHub
-		Repo    Repo
-		Build   Build
-		Source  Source
-		Config  Config
-		Payload Payload
-		Commit  Commit
+		GitHub     GitHub
+		Repo       Repo
+		Build      Build
+		Source     Source
+		Config     Config
+		Payload    Payload
+		Commit     Commit
+		httpClient *http.Client
 	}
 )
 
 func (c *Config) validate() error {
-	var missingFields []string
-
 	if c.webhookURL != "" {
-		_, err := url.Parse(c.webhookURL)
-		if err != nil {
+		if _, err := url.Parse(c.webhookURL); err != nil {
 			return fmt.Errorf("invalid webhook url: %w", err)
 		}
+		return nil
 	}
 
-	if c.webhookURL == "" {
-		if c.WebhookID == "" {
-			missingFields = append(missingFields, "WebhookID")
-		}
-		if c.WebhookToken == "" {
-			missingFields = append(missingFields, "WebhookToken")
-		}
+	var missingFields []string
+	if c.WebhookID == "" {
+		missingFields = append(missingFields, "WebhookID")
 	}
-
+	if c.WebhookToken == "" {
+		missingFields = append(missingFields, "WebhookToken")
+	}
 	if len(missingFields) > 0 {
 		return fmt.Errorf("missing discord config: %s", strings.Join(missingFields, ", "))
 	}
@@ -178,17 +175,12 @@ func templateMessage(t string, plugin Plugin) (string, error) {
 func fileUploadRequest(ctx context.Context, uri string, params map[string]string, paramName, path string) (*http.Request, error) {
 	// Clean and check path
 	path = filepath.Clean(path)
-	if _, err := os.Stat(path); err != nil {
+	file, err := os.Open(path)
+	if err != nil {
 		return nil, fmt.Errorf("file %s not accessible: %w", path, err)
 	}
+	defer file.Close()
 
-	// Read file content
-	content, err := os.ReadFile(path)
-	if err != nil {
-		return nil, fmt.Errorf("failed to read file %s: %w", path, err)
-	}
-
-	// Create multipart form
 	body := &bytes.Buffer{}
 	writer := multipart.NewWriter(body)
 
@@ -197,7 +189,9 @@ func fileUploadRequest(ctx context.Context, uri string, params map[string]string
 	if err != nil {
 		return nil, fmt.Errorf("failed to create form file: %w", err)
 	}
-	if _, err = part.Write(content); err != nil {
+
+	// Stream file content
+	if _, err = io.Copy(part, file); err != nil {
 		return nil, fmt.Errorf("failed to write file content: %w", err)
 	}
 
@@ -224,65 +218,84 @@ func fileUploadRequest(ctx context.Context, uri string, params map[string]string
 
 // Exec executes the plugin.
 func (p *Plugin) Exec(ctx context.Context) error {
+	// init http client
+	p.httpClient = &http.Client{
+		Timeout: 15 * time.Second,
+	}
+
 	if err := p.Config.validate(); err != nil {
 		return fmt.Errorf("failed to validate config: %w", err)
 	}
 
-	// check if message is empty
-	messages := []string{}
+	if err := p.handleMessages(ctx); err != nil {
+		return err
+	}
+
+	if err := p.handleFiles(ctx); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// handleMessages sends all configured messages.
+func (p *Plugin) handleMessages(ctx context.Context) error {
+	// 1. Handle empty message (default template)
+	if len(p.Config.Message) == 0 {
+		object := p.Template()
+		p.Payload.Embeds = []EmbedObject{object}
+		if err := p.SendMessage(ctx); err != nil {
+			return fmt.Errorf("failed to send default message: %w", err)
+		}
+		return nil
+	}
+
+	// 2. Handle custom messages
 	for _, m := range p.Config.Message {
 		if m == "" {
 			continue
 		}
-		messages = append(messages, m)
-	}
 
-	if len(messages) == 0 {
-		object := p.Template()
-		p.Payload.Embeds = []EmbedObject{object}
-		err := p.SendMessage(ctx)
+		txt, err := templateMessage(m, *p)
 		if err != nil {
-			return err
+			return fmt.Errorf("failed to render template: %w", err)
+		}
+
+		// With color, messages are grouped as embeds
+		if p.Config.Color != "" {
+			object := p.DefaultTemplate(txt)
+			p.Payload.Embeds = append(p.Payload.Embeds, object)
+		} else {
+			// Without color, send as plain text immediately
+			p.Payload.Content = txt
+			if err := p.SendMessage(ctx); err != nil {
+				return fmt.Errorf("failed to send plain text message: %w", err)
+			}
+			// Reset for next message
+			p.Clear()
 		}
 	}
 
-	if len(messages) > 0 {
-		for _, m := range messages {
-			txt, err := templateMessage(m, *p)
-			if err != nil {
-				return err
-			}
-
-			if len(p.Config.Color) != 0 {
-				object := p.DefaultTemplate(txt)
-				p.Payload.Embeds = append(p.Payload.Embeds, object)
-			} else {
-				p.Payload.Content = txt
-				err = p.SendMessage(ctx)
-				if err != nil {
-					return err
-				}
-			}
-		}
-
-		if len(p.Payload.Embeds) > 0 {
-			err := p.SendMessage(ctx)
-			if err != nil {
-				return err
-			}
+	// 3. Send grouped embeds if any
+	if len(p.Payload.Embeds) > 0 {
+		if err := p.SendMessage(ctx); err != nil {
+			return fmt.Errorf("failed to send embed messages: %w", err)
 		}
 	}
 
+	return nil
+}
+
+// handleFiles sends all configured files.
+func (p *Plugin) handleFiles(ctx context.Context) error {
 	for _, f := range p.Config.File {
 		if f == "" {
 			continue
 		}
-		err := p.SendFile(ctx, f)
-		if err != nil {
-			return err
+		if err := p.SendFile(ctx, f); err != nil {
+			return fmt.Errorf("failed to send file %s: %w", f, err)
 		}
 	}
-
 	return nil
 }
 
@@ -311,12 +324,25 @@ func (p *Plugin) SendFile(ctx context.Context, file string) error {
 		file,
 	)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to create file upload request: %w", err)
 	}
-	client := &http.Client{}
-	_, err = client.Do(request)
+
+	resp, err := p.httpClient.Do(request)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to send file: %w", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode >= http.StatusBadRequest {
+		bodyBytes, err := io.ReadAll(resp.Body)
+		if err != nil {
+			return fmt.Errorf("failed to read response body: %w", err)
+		}
+		var jsonResponse map[string]interface{}
+		if err := json.Unmarshal(bodyBytes, &jsonResponse); err != nil {
+			return fmt.Errorf("failed to send file, status code: %d, body: %s", resp.StatusCode, string(bodyBytes))
+		}
+		return fmt.Errorf("failed to send file, status code: %d, error: %s, code: %v", resp.StatusCode, jsonResponse["message"], jsonResponse["code"])
 	}
 
 	return nil
@@ -327,25 +353,23 @@ func (p *Plugin) SendMessage(ctx context.Context) error {
 	webhookURL := p.Config.GetWebhookURL()
 	b := new(bytes.Buffer)
 	if err := json.NewEncoder(b).Encode(p.Payload); err != nil {
-		return err
+		return fmt.Errorf("failed to encode payload: %w", err)
 	}
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodPost, webhookURL, b)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to create request: %w", err)
 	}
 	req.Header.Set("Content-Type", "application/json; charset=utf-8")
 
-	client := &http.Client{
-		Timeout: 10 * time.Second,
-	}
-	resp, err := client.Do(req)
+	resp, err := p.httpClient.Do(req)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to send message: %w", err)
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode != http.StatusNoContent {
+	// 200 and 204 are both valid status codes for webhooks.
+	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusNoContent {
 		bodyBytes, err := io.ReadAll(resp.Body)
 		if err != nil {
 			return fmt.Errorf("failed to read response body: %w", err)
