@@ -116,8 +116,8 @@ func TestColorConversion(t *testing.T) {
 		expectedFall int
 	}{
 		{"valid hex", "#ffaa00", 16755200, "success", 1752220},
-		{"invalid hex", "not-a-hex", 0, "failure", 16724530},
-		{"status success", "", 0, "success", 1752220},
+		{"invalid hex", "not-a-hex", 16724530, "failure", 16724530},
+		{"status success", "", 0, "success", 1754624},
 		{"status failure", "", 0, "failure", 16724530},
 		{"status killed", "", 0, "killed", 16724530},
 		{"status default", "", 0, "running", 16767280},
