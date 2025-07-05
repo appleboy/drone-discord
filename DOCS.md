@@ -197,3 +197,31 @@ urlencode
 
 since
 : returns a duration string between now and the given timestamp. Example `{{since build.started}}`
+
+## Note for Woodpecker 3.x Users
+
+Starting with Woodpecker 3.x, the `build.status` variable is always set to `success`, which means message templates cannot correctly distinguish between success and failure. It is recommended to use the `when.status` condition to split notifications for success and failure, as shown below:
+
+```yaml
+- name: discord success notification
+  when:
+    status: [ success ]
+  image: appleboy/drone-discord
+  settings:
+    webhook_id: xxxxxxxxxx
+    webhook_token: xxxxxxxxxx
+    message: >
+      build {{build.number}} succeeded. Good job.
+
+- name: discord failure notification
+  when:
+    status: [ failure ]
+  image: appleboy/drone-discord
+  settings:
+    webhook_id: xxxxxxxxxx
+    webhook_token: xxxxxxxxxx
+    message: >
+      build {{build.number}} failed. Fix me please.
+```
+
+This is due to a change in Woodpecker CI behavior and cannot be fixed on the plugin side. Please use the above workaround for correct notifications.
