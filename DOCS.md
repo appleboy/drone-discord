@@ -200,7 +200,7 @@ since
 
 ## Note for Woodpecker 3.x Users
 
-Starting from Woodpecker 3.x, the `build.status` variable is always set to `success`, which means message templates cannot correctly distinguish between success and failure. It is recommended to use the `when.status` condition to split notifications for success and failure, as shown below:
+Starting with Woodpecker 3.x, the `build.status` variable is always set to `success`, which means message templates cannot correctly distinguish between success and failure. It is recommended to use the `when.status` condition to split notifications for success and failure, as shown below:
 
 ```yaml
 - name: discord success notification
