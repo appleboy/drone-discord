@@ -5,6 +5,7 @@
 [Drone](https://www.drone.io/) / [Woodpecker](https://woodpecker-ci.org/) plugin for sending messages to Discord channels using Webhooks.
 
 [![GoDoc](https://godoc.org/github.com/appleboy/drone-discord?status.svg)](https://godoc.org/github.com/appleboy/drone-discord)
+[![Trivy Security Scan](https://github.com/appleboy/drone-discord/actions/workflows/trivy.yml/badge.svg?branch=master)](https://github.com/appleboy/drone-discord/actions/workflows/trivy.yml)
 [![codecov](https://codecov.io/gh/appleboy/drone-discord/branch/master/graph/badge.svg)](https://codecov.io/gh/appleboy/drone-discord)
 [![Go Report Card](https://goreportcard.com/badge/github.com/appleboy/drone-discord)](https://goreportcard.com/report/github.com/appleboy/drone-discord)
 [![Docker Pulls](https://img.shields.io/docker/pulls/appleboy/drone-discord.svg)](https://hub.docker.com/r/appleboy/drone-discord/)
