@@ -1,6 +1,6 @@
 module github.com/appleboy/drone-discord
 
-go 1.23.0
+go 1.25.9
 
 require (
 	github.com/appleboy/drone-template-lib v1.3.0
