@@ -7,7 +7,6 @@
 [![GoDoc](https://godoc.org/github.com/appleboy/drone-discord?status.svg)](https://godoc.org/github.com/appleboy/drone-discord)
 [![Trivy Security Scan](https://github.com/appleboy/drone-discord/actions/workflows/trivy.yml/badge.svg?branch=master)](https://github.com/appleboy/drone-discord/actions/workflows/trivy.yml)
 [![codecov](https://codecov.io/gh/appleboy/drone-discord/branch/master/graph/badge.svg)](https://codecov.io/gh/appleboy/drone-discord)
-[![Go Report Card](https://goreportcard.com/badge/github.com/appleboy/drone-discord)](https://goreportcard.com/report/github.com/appleboy/drone-discord)
 [![Docker Pulls](https://img.shields.io/docker/pulls/appleboy/drone-discord.svg)](https://hub.docker.com/r/appleboy/drone-discord/)
 
 Webhooks are a low-effort way to post messages to channels in Discord. They do not require a bot user or authentication to use. See more [API documentation](https://discordapp.com/developers/docs/resources/webhook). For usage information and a list of available options, please refer to [the documentation](http://plugins.drone.io/appleboy/drone-discord/).
