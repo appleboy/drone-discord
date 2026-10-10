@@ -2,12 +2,47 @@ package main
 
 import (
 	"context"
+	"encoding/json"
+	"io"
+	"net/http"
+	"net/http/httptest"
 	"os"
+	"sync/atomic"
 	"testing"
 	"time"
 
 	"github.com/stretchr/testify/assert"
 )
+
+func newTestWebhook(t *testing.T) string {
+	t.Helper()
+	var requests atomic.Int64
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		requests.Add(1)
+		assert.Equal(t, http.MethodPost, r.Method)
+		if r.Header.Get("Content-Type") == "application/json; charset=utf-8" {
+			body, err := io.ReadAll(r.Body)
+			assert.NoError(t, err)
+			assert.True(t, json.Valid(body))
+		} else {
+			file, _, err := r.FormFile("file")
+			if !assert.NoError(t, err) {
+				w.WriteHeader(http.StatusBadRequest)
+				return
+			}
+			defer file.Close()
+			body, err := io.ReadAll(file)
+			assert.NoError(t, err)
+			assert.NotEmpty(t, body)
+		}
+		w.WriteHeader(http.StatusNoContent)
+	}))
+	t.Cleanup(func() {
+		server.Close()
+		assert.Positive(t, requests.Load())
+	})
+	return server.URL
+}
 
 func TestMissingConfig(t *testing.T) {
 	plugin := Plugin{}
@@ -21,9 +56,8 @@ func TestMissingConfig(t *testing.T) {
 func TestSendPlainTextMessage(t *testing.T) {
 	plugin := Plugin{
 		Config: Config{
-			WebhookID:    os.Getenv("WEBHOOK_ID"),
-			WebhookToken: os.Getenv("WEBHOOK_TOKEN"),
-			Message:      []string{"Hello, world!", "This is a test."},
+			webhookURL: newTestWebhook(t),
+			Message:    []string{"Hello, world!", "This is a test."},
 		},
 		Payload: Payload{
 			Username: "test-bot",
@@ -37,10 +71,9 @@ func TestSendPlainTextMessage(t *testing.T) {
 func TestSendEmbedMessage(t *testing.T) {
 	plugin := Plugin{
 		Config: Config{
-			WebhookID:    os.Getenv("WEBHOOK_ID"),
-			WebhookToken: os.Getenv("WEBHOOK_TOKEN"),
-			Message:      []string{"This is an embed message."},
-			Color:        "#48f442",
+			webhookURL: newTestWebhook(t),
+			Message:    []string{"This is an embed message."},
+			Color:      "#48f442",
 		},
 		Payload: Payload{
 			Username: "embed-bot",
@@ -70,9 +103,8 @@ func TestSendDefaultMessage(t *testing.T) {
 			Event:  "push",
 		},
 		Config: Config{
-			WebhookID:    os.Getenv("WEBHOOK_ID"),
-			WebhookToken: os.Getenv("WEBHOOK_TOKEN"),
-			Drone:        true,
+			webhookURL: newTestWebhook(t),
+			Drone:      true,
 		},
 		Payload: Payload{
 			Username: "default-bot",
@@ -94,9 +126,8 @@ func TestSendFile(t *testing.T) {
 
 	plugin := Plugin{
 		Config: Config{
-			WebhookID:    os.Getenv("WEBHOOK_ID"),
-			WebhookToken: os.Getenv("WEBHOOK_TOKEN"),
-			File:         []string{"test_file.txt"},
+			webhookURL: newTestWebhook(t),
+			File:       []string{"test_file.txt"},
 		},
 		Payload: Payload{
 			Username: "file-bot",
@@ -162,12 +193,11 @@ func TestExecWithAllFeatures(t *testing.T) {
 			Link:   "http://example.com",
 		},
 		Config: Config{
-			WebhookID:    os.Getenv("WEBHOOK_ID"),
-			WebhookToken: os.Getenv("WEBHOOK_TOKEN"),
-			Message:      []string{"First line of embed.", "Second line."},
-			File:         []string{"test_all.txt"},
-			Color:        "#32a852",
-			Drone:        true,
+			webhookURL: newTestWebhook(t),
+			Message:    []string{"First line of embed.", "Second line."},
+			File:       []string{"test_all.txt"},
+			Color:      "#32a852",
+			Drone:      true,
 		},
 		Payload: Payload{
 			Username: "super-bot",

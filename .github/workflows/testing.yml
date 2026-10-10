@@ -8,13 +8,15 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
       - name: Setup go
         uses: actions/setup-go@v7
         with:
-          go-version: "^1"
+          go-version-file: go.mod
           check-latest: true
-      - name: Checkout repository
-        uses: actions/checkout@v7
+
       - name: Setup golangci-lint
         uses: golangci/golangci-lint-action@v9
         with:
@@ -60,9 +62,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-go-
       - name: Run Tests
-        env:
-          WEBHOOK_ID: ${{ secrets.WEBHOOK_ID }}
-          WEBHOOK_TOKEN: ${{ secrets.WEBHOOK_TOKEN }}
         run: |
           go test -v -covermode=atomic -coverprofile=coverage.out
 
