@@ -38,19 +38,34 @@ func main() {
 	app.Version = Version
 	app.Flags = []cli.Flag{
 		&cli.StringFlag{
-			Name:    "webhook-url",
-			Usage:   "The Discord webhook URL to send messages to.",
-			EnvVars: []string{"PLUGIN_WEBHOOK_URL", "WEBHOOK_URL", "DISCORD_WEBHOOK_URL", "INPUT_WEBHOOK_URL"},
+			Name:  "webhook-url",
+			Usage: "The Discord webhook URL to send messages to.",
+			EnvVars: []string{
+				"PLUGIN_WEBHOOK_URL",
+				"WEBHOOK_URL",
+				"DISCORD_WEBHOOK_URL",
+				"INPUT_WEBHOOK_URL",
+			},
 		},
 		&cli.StringFlag{
-			Name:    "webhook-id",
-			Usage:   "The Discord webhook ID.",
-			EnvVars: []string{"PLUGIN_WEBHOOK_ID", "WEBHOOK_ID", "DISCORD_WEBHOOK_ID", "INPUT_WEBHOOK_ID"},
+			Name:  "webhook-id",
+			Usage: "The Discord webhook ID.",
+			EnvVars: []string{
+				"PLUGIN_WEBHOOK_ID",
+				"WEBHOOK_ID",
+				"DISCORD_WEBHOOK_ID",
+				"INPUT_WEBHOOK_ID",
+			},
 		},
 		&cli.StringFlag{
-			Name:    "webhook-token",
-			Usage:   "The Discord webhook token.",
-			EnvVars: []string{"PLUGIN_WEBHOOK_TOKEN", "WEBHOOK_TOKEN", "DISCORD_WEBHOOK_TOKEN", "INPUT_WEBHOOK_TOKEN"},
+			Name:  "webhook-token",
+			Usage: "The Discord webhook token.",
+			EnvVars: []string{
+				"PLUGIN_WEBHOOK_TOKEN",
+				"WEBHOOK_TOKEN",
+				"DISCORD_WEBHOOK_TOKEN",
+				"INPUT_WEBHOOK_TOKEN",
+			},
 		},
 		&cli.StringSliceFlag{
 			Name:    "message",
@@ -103,9 +118,14 @@ func main() {
 			EnvVars: []string{"DRONE_REPO", "CI_REPO", "GITHUB_REPOSITORY"},
 		},
 		&cli.StringFlag{
-			Name:    "repo.namespace",
-			Usage:   "The repository namespace.",
-			EnvVars: []string{"DRONE_REPO_OWNER", "DRONE_REPO_NAMESPACE", "CI_REPO_OWNER", "GITHUB_ACTOR"},
+			Name:  "repo.namespace",
+			Usage: "The repository namespace.",
+			EnvVars: []string{
+				"DRONE_REPO_OWNER",
+				"DRONE_REPO_NAMESPACE",
+				"CI_REPO_OWNER",
+				"GITHUB_ACTOR",
+			},
 		},
 		&cli.StringFlag{
 			Name:    "repo.name",

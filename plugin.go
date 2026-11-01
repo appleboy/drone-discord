@@ -172,7 +172,12 @@ func templateMessage(t string, plugin Plugin) (string, error) {
 
 // Creates a new file upload http request with optional extra params
 // https://matt.aimonetti.net/posts/2013/07/01/golang-multipart-file-upload-example/
-func fileUploadRequest(ctx context.Context, uri string, params map[string]string, paramName, path string) (*http.Request, error) {
+func fileUploadRequest(
+	ctx context.Context,
+	uri string,
+	params map[string]string,
+	paramName, path string,
+) (*http.Request, error) {
 	// Clean and check path
 	path = filepath.Clean(path)
 	file, err := os.Open(path)
@@ -231,11 +236,7 @@ func (p *Plugin) Exec(ctx context.Context) error {
 		return err
 	}
 
-	if err := p.handleFiles(ctx); err != nil {
-		return err
-	}
-
-	return nil
+	return p.handleFiles(ctx)
 }
 
 // handleMessages sends all configured messages.
@@ -338,11 +339,20 @@ func (p *Plugin) SendFile(ctx context.Context, file string) error {
 		if err != nil {
 			return fmt.Errorf("failed to read response body: %w", err)
 		}
-		var jsonResponse map[string]interface{}
+		var jsonResponse map[string]any
 		if err := json.Unmarshal(bodyBytes, &jsonResponse); err != nil {
-			return fmt.Errorf("failed to send file, status code: %d, body: %s", resp.StatusCode, string(bodyBytes))
+			return fmt.Errorf(
+				"failed to send file, status code: %d, body: %s",
+				resp.StatusCode,
+				string(bodyBytes),
+			)
 		}
-		return fmt.Errorf("failed to send file, status code: %d, error: %s, code: %v", resp.StatusCode, jsonResponse["message"], jsonResponse["code"])
+		return fmt.Errorf(
+			"failed to send file, status code: %d, error: %s, code: %v",
+			resp.StatusCode,
+			jsonResponse["message"],
+			jsonResponse["code"],
+		)
 	}
 
 	return nil
@@ -374,11 +384,16 @@ func (p *Plugin) SendMessage(ctx context.Context) error {
 		if err != nil {
 			return fmt.Errorf("failed to read response body: %w", err)
 		}
-		var jsonResponse map[string]interface{}
+		var jsonResponse map[string]any
 		if err := json.Unmarshal(bodyBytes, &jsonResponse); err != nil {
 			return fmt.Errorf("failed to unmarshal response body: %w", err)
 		}
-		return fmt.Errorf("failed to send message, status code: %d, error: %s, code: %v", resp.StatusCode, jsonResponse["message"], jsonResponse["code"])
+		return fmt.Errorf(
+			"failed to send message, status code: %d, error: %s, code: %v",
+			resp.StatusCode,
+			jsonResponse["message"],
+			jsonResponse["code"],
+		)
 	}
 
 	return nil

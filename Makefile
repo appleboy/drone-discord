@@ -1,6 +1,6 @@
 EXECUTABLE := drone-discord
-GOFMT ?= gofumpt -l -w
 GO ?= go
+TOOLS_MOD := -modfile=go.tools.mod
 GOFILES := $(shell find . -name "*.go" -type f)
 HAS_GO = $(shell hash $(GO) > /dev/null 2>&1 && echo "GO" || echo "NOGO" )
 
@@ -41,25 +41,14 @@ LDFLAGS ?= -X 'main.Version=$(VERSION)'
 all: build
 
 fmt:
-	@hash gofumpt > /dev/null 2>&1; if [ $$? -ne 0 ]; then \
-		$(GO) install mvdan.cc/gofumpt@latest; \
-	fi
-	$(GOFMT) -w $(GOFILES)
+	$(GO) tool $(TOOLS_MOD) golangci-lint fmt
 
 vet:
 	$(GO) vet ./...
 
 .PHONY: fmt-check
 fmt-check:
-	@hash gofumpt > /dev/null 2>&1; if [ $$? -ne 0 ]; then \
-		$(GO) install mvdan.cc/gofumpt; \
-	fi
-	@diff=$$($(GOFMT) -d $(GOFILES)); \
-	if [ -n "$$diff" ]; then \
-		echo "Please run 'make fmt' and commit the result:"; \
-		echo "$${diff}"; \
-		exit 1; \
-	fi;
+	$(GO) tool $(TOOLS_MOD) golangci-lint fmt --diff --diff-colored=false
 
 test:
 	@$(GO) test -v -cover -coverprofile coverage.txt ./... && echo "\n==>\033[32m Ok\033[m\n" || exit 1
@@ -84,3 +73,11 @@ clean:
 
 version:
 	@echo $(VERSION)
+
+lint:
+	$(GO) tool $(TOOLS_MOD) golangci-lint run
+
+install-tools:
+	$(GO) mod download $(TOOLS_MOD)
+
+.PHONY: fmt fmt-check lint install-tools

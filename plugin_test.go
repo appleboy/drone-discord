@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func newTestWebhook(t *testing.T) string {
@@ -49,7 +50,7 @@ func TestMissingConfig(t *testing.T) {
 
 	err := plugin.Exec(context.Background())
 
-	assert.Error(t, err)
+	require.Error(t, err)
 	assert.Contains(t, err.Error(), "missing discord config")
 }
 
@@ -65,7 +66,7 @@ func TestSendPlainTextMessage(t *testing.T) {
 	}
 
 	err := plugin.Exec(context.Background())
-	assert.NoError(t, err)
+	require.NoError(t, err)
 }
 
 func TestSendEmbedMessage(t *testing.T) {
@@ -81,7 +82,7 @@ func TestSendEmbedMessage(t *testing.T) {
 	}
 
 	err := plugin.Exec(context.Background())
-	assert.NoError(t, err)
+	require.NoError(t, err)
 }
 
 func TestSendDefaultMessage(t *testing.T) {
@@ -112,15 +113,15 @@ func TestSendDefaultMessage(t *testing.T) {
 	}
 
 	err := plugin.Exec(context.Background())
-	assert.NoError(t, err)
+	require.NoError(t, err)
 }
 
 func TestSendFile(t *testing.T) {
 	// Create a dummy file for testing
 	dummyFile, err := os.Create("test_file.txt")
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	_, err = dummyFile.WriteString("This is a test file.")
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	dummyFile.Close()
 	defer os.Remove("test_file.txt")
 
@@ -135,7 +136,7 @@ func TestSendFile(t *testing.T) {
 	}
 
 	err = plugin.Exec(context.Background())
-	assert.NoError(t, err)
+	require.NoError(t, err)
 }
 
 func TestColorConversion(t *testing.T) {
@@ -173,9 +174,9 @@ func TestExecWithAllFeatures(t *testing.T) {
 	time.Sleep(1 * time.Second)
 	// Create a dummy file for testing
 	dummyFile, err := os.Create("test_all.txt")
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	_, err = dummyFile.WriteString("This is a test file for a combined test.")
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	dummyFile.Close()
 	defer os.Remove("test_all.txt")
 
@@ -205,5 +206,5 @@ func TestExecWithAllFeatures(t *testing.T) {
 	}
 
 	err = plugin.Exec(context.Background())
-	assert.NoError(t, err)
+	require.NoError(t, err)
 }
